@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-type vars struct {
+type Vars struct {
 	host string
 	secKey string
 	googleProvider provider
@@ -25,7 +25,7 @@ type provider struct {
 	redirectUrl string
 }
 
-func GetVars(flagUtilFunc flagUtilGetter) vars {
+func GetVars(flagUtilFunc flagUtilGetter) Vars {
 	host := flagUtilFunc("host", "Application host", ":8080", false)
 	secKey := flagUtilFunc("sec-key", "Security key", "", true)
 	googleClientId := flagUtilFunc("google-client-id", "Google Client ID", "", false)
@@ -37,7 +37,7 @@ func GetVars(flagUtilFunc flagUtilGetter) vars {
 		fmt.Println("Security key is mandatory")
 		os.Exit(1)
 	}
-	return vars {
+	return Vars {
 		host: *host,
 		secKey: *secKey,
 		googleProvider: *googleProvider,

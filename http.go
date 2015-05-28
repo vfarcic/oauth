@@ -2,32 +2,24 @@ package main
 
 import (
 	"net/http"
-	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/objx"
+	"fmt"
+	"github.com/stretchr/gomniauth/common"
 )
 
-func loginHandler(providerName string) http.HandlerFunc {
-	provider, err := gomniauth.Provider(providerName)
-	if err != nil {
-		panic(err)
-	}
+func loginHandler(provider common.Provider) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		url, _ := provider.GetBeginAuthURL(nil, nil)
 		http.Redirect(w, r, url, http.StatusFound)
 	}
 }
 
-func callbackHandler(providerName string, redirectURL string) http.HandlerFunc {
-//	provider, err := gomniauth.Provider(providerName)
-//	if err != nil {
-//		panic(err)
-//	}
+func callbackHandler(provider common.Provider, redirectURL string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-//		omap, err := objx.FromURLQuery(r.URL.RawQuery)
-//		if err != nil {
-//			http.Error(w, err.Error(), http.StatusInternalServerError)
-//			return
-//		}
-//		creds, err := provider.CompleteAuth(omap)
+		query, _ := objx.FromURLQuery(r.URL.RawQuery)
+		_, err := provider.CompleteAuth(query)
+		fmt.Println(query)
+		fmt.Println(err)
 //		if err != nil {
 //			http.Error(w, err.Error(), http.StatusInternalServerError)
 //			return
