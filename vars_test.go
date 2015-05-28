@@ -135,3 +135,13 @@ func mockedFlagUtilWithEmptyReturn(name string, fullName string, defaultValue st
 	value := ""
 	return &value
 }
+
+var TestVars = Vars {
+	host: "MY_DOMAIN",
+	secKey: "MY_SECURITY_KEY",
+	googleProvider: provider {
+		clientId: "MY_GOOGLE_CLIENT_ID",
+		clientSecret: "MY_GOOGLE_CLIENT_SECRET",
+		redirectUrl: "MY_REDIRECT_URL_AFTER_GOOGLE",
+	},
+}

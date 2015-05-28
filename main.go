@@ -11,16 +11,18 @@ go build -o oauth && ./oauth \
 // TODO: Test
 
 import (
-	"net/http"
-	"log"
-	"fmt"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/gomniauth/common"
+	"fmt"
+	"net/http"
+	"log"
 )
 
 func main() {
 	vars := GetVars(flagUtil)
 	setGomniAuth(vars)
+	// TODO: Add the rest of providers
 	providerNames := []string{ "google" }
 	for _, providerName := range providerNames {
 		provider, err := gomniauth.Provider(providerName)
@@ -39,17 +41,20 @@ func main() {
 	}
 }
 
+func getGoogleProvider(vars Vars) common.Provider {
+	return google.New(
+		vars.googleProvider.clientId,
+		vars.googleProvider.clientSecret,
+		vars.googleProvider.redirectUrl,
+	)
+}
+
 func setGomniAuth(vars Vars) {
 	gomniauth.SetSecurityKey(vars.secKey)
-	// TODO: Change to params
 	// TODO: Add the rest of providers
-	// TODO: Setup and test all providers
+	// TODO: Manually test all providers
 	gomniauth.WithProviders(
-		google.New(
-			vars.googleProvider.clientId,
-			vars.googleProvider.clientSecret,
-			vars.googleProvider.redirectUrl,
-		),
+		getGoogleProvider(vars),
 	)
 }
 

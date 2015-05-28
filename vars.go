@@ -37,7 +37,7 @@ func GetVars(flagUtilFunc flagUtilGetter) Vars {
 		fmt.Println("Security key is mandatory")
 		os.Exit(1)
 	}
-	return Vars {
+	return Vars{
 		host: *host,
 		secKey: *secKey,
 		googleProvider: *googleProvider,
