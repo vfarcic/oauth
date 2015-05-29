@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"github.com/stretchr/objx"
 	"github.com/stretchr/gomniauth/common"
-	"log"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
@@ -27,8 +26,8 @@ func callbackHandler(provider common.Provider, redirectURL string) http.HandlerF
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// TODO: Store user to MongoDB
-		log.Print(user)
+		// TODO: Test
+		SaveToDB(getMongoUser(user))
 		http.Redirect(w, r, redirectURL, http.StatusFound)
 	}
 }

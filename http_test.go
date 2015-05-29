@@ -63,10 +63,9 @@ func getMockedCallbackProvider(completeAuthError error, getUserError error) comm
 	creds := &common.Credentials{
 		make(map[string]interface{}),
 	}
-	testUser := new(test.TestUser)
 	testProvider := new(test.TestProvider)
 	testProvider.On("CompleteAuth", mock.Anything).Return(creds, completeAuthError)
-	testProvider.On("GetUser", mock.Anything).Return(testUser, getUserError)
+	testProvider.On("GetUser", mock.Anything).Return(GetTestUser(), getUserError)
 	return testProvider
 }
 

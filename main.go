@@ -58,7 +58,7 @@ func setGomniAuth(vars Vars) {
 	)
 }
 
-// TODO: Add API GET
+// TODO: Add GET API
 // TODO: Create Dockerfile
 // TODO: Publish to hub.docker.com
 // TODO: Promote
