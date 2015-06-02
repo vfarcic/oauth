@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"github.com/stretchr/objx"
 	"github.com/stretchr/gomniauth/common"
+	"strings"
+	"encoding/json"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
@@ -27,6 +29,21 @@ func callbackHandler(provider common.Provider, redirectURL string, dbHandler fun
 			return
 		}
 		dbHandler(getMongoUser(user))
-		http.Redirect(w, r, redirectURL, http.StatusFound)
+		url := redirectURL + "?authid=" + user.Data().Get("id").Str()
+		http.Redirect(w, r, url, http.StatusFound)
+	}
+}
+
+func userApiHandler(dbHandler func(authID string) (MongoUser, error)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		segs := strings.Split(r.URL.Path, "/")
+		authID := segs[4]
+		users, err := dbHandler(authID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode(users)
+		w.Header().Set("Content-Type", "application/json")
 	}
 }

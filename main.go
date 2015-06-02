@@ -38,6 +38,8 @@ func main() {
 			fmt.Sprintf("/auth/%s/callback", providerName),
 			callbackHandler(provider, vars.redirectUrl, SaveToMongoDB))
 	}
+	// TODO: Test
+	http.HandleFunc("/api/v1/user/", userApiHandler(GetFromDBByAuthID))
 	log.Println("Starting the server", vars.host)
 	if err := http.ListenAndServe(vars.host, nil); err != nil {
 		log.Fatalln("Could not initiate the server", vars.host, " - ", err)
@@ -61,7 +63,6 @@ func setGomniAuth(vars Vars) {
 	)
 }
 
-// TODO: Add GET API
 // TODO: Change Dockerfile FROM to Alpine Linux
 // TODO: Add to Travis
 // TODO: Add to Docker Hub

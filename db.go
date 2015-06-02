@@ -7,12 +7,13 @@ import (
 )
 
 type MongoUser struct {
-	Email string
-	Name string
-	Nickname string
-	AvatarURL string
-	ProviderCredentials map[string]*common.Credentials
-	AuthCode string
+	Email string `json:"email"`
+	Name string `json:"name"`
+	Nickname string `json:"nickname"`
+	AvatarURL string `json:"avatar_url"`
+	ProviderCredentials map[string]*common.Credentials `json:"provider_credentials"`
+	AuthCode string `json:"auth_code"`
+	AuthID string `json:"auth_id"`
 }
 
 func getMongoUser(user common.User) MongoUser {
@@ -23,6 +24,7 @@ func getMongoUser(user common.User) MongoUser {
 		AvatarURL: user.AvatarURL(),
 		AuthCode: user.AuthCode(),
 		ProviderCredentials: user.ProviderCredentials(),
+		AuthID: user.Data().Get("id").Str(),
 	}
 }
 
@@ -42,6 +44,15 @@ func GetFromDB(email string) (MongoUser, error) {
 	c := getUsersCollection(session)
 	users := MongoUser{}
 	err := c.Find(bson.M{"email": email}).One(&users)
+	return users, err
+}
+
+func GetFromDBByAuthID(authID string) (MongoUser, error) {
+	session := getSession()
+	defer session.Close()
+	c := getUsersCollection(session)
+	users := MongoUser{}
+	err := c.Find(bson.M{"authid": authID}).One(&users)
 	return users, err
 }
 

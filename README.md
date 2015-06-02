@@ -37,7 +37,6 @@ Example Run
 ```bash
 sudo docker run -d --name oauth \
 	-p 8080:8080 \
-	--link oauth-db:db \
 	-v /etc/ssl/certs:/etc/ssl/certs \
 	-v /data/oauth:/data/db \
 	-e SEC_KEY="Bla" \

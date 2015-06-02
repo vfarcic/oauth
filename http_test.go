@@ -11,11 +11,13 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/gomniauth/common"
 	"errors"
+	"encoding/json"
 )
 
 var googleUrl = "http://google.com/auth"
 var redirectUrl = "http://example.com/redirect"
 var callbackUrl = "http://example.com/foo?code=4/klISKMqMfj2ErEykXTEI94kyhspflKAzbTih1eheJ4I.AlMYdYp5IQ4YEnp6UAPFm0GKMKMymwI"
+var apiUserUrl = "http://example.com/api/v1/user/123456789"
 
 func TestLoginHandlerShouldRedirectToProviderUrl(t *testing.T) {
 	testProvider := new(test.TestProvider)
@@ -36,10 +38,10 @@ func TestCallbackHandlerShouldRedirectToUrl(t *testing.T) {
 	w := httptest.NewRecorder()
 	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
 
-	assert.Equal(t, redirectUrl, w.Header().Get("Location"))
+	assert.Equal(t, redirectUrl + "?authid=", w.Header().Get("Location"))
 }
 
-func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFailsl(t *testing.T) {
+func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFails(t *testing.T) {
 	mockedProvider := getMockedCallbackProvider(errors.New("This is an CompleteAuth error"), nil)
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
@@ -47,6 +49,23 @@ func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFailsl(t 
 	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
+}
+
+func TestUserApiHandlerShouldReturnInternalServerErrorWhenDbReturnsAnError(t *testing.T) {
+	req, _ := http.NewRequest("GET", apiUserUrl, nil)
+	w := httptest.NewRecorder()
+	userApiHandler(GetFromDBByAuthIDMockedWithError)(w, req)
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+}
+
+func TestUserApiHandlerShouldReturnUserFromDB(t *testing.T) {
+	req, _ := http.NewRequest("GET", apiUserUrl, nil)
+	w := httptest.NewRecorder()
+	userApiHandler(GetFromDBByAuthIDMocked)(w, req)
+	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
+	json, _ := json.Marshal(testUser)
+	assert.Equal(t, string(json) + "\n", w.Body.String())
 }
 
 func TestCallbackHandlerShouldReturnInternalServerErrorWhenGetUserFails(t *testing.T) {
@@ -76,4 +95,12 @@ func init() {
 
 func SaveToMockedDB(user MongoUser) error {
 	return nil
+}
+
+func GetFromDBByAuthIDMocked(authID string) (MongoUser, error) {
+	return testUser, nil
+}
+
+func GetFromDBByAuthIDMockedWithError(authID string) (MongoUser, error) {
+	return testUser, errors.New("This is an error")
 }

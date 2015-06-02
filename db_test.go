@@ -53,6 +53,22 @@ func TestGetFromDBShouldReturnErrorWhenNonExistent(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestGetFromDBByAuthIDShouldReturnData(t *testing.T) {
+	DropFromDB()
+	SaveToMongoDB(testUser)
+
+	actual, err := GetFromDBByAuthID(testUser.AuthID)
+
+	assert.Nil(t, err)
+	assert.Equal(t, testUser, actual)
+}
+
+func TestGetFromDBByAuthIDShouldReturnErrorWhenNonExistent(t *testing.T) {
+	_, err := GetFromDBByAuthID("111111111111111")
+
+	assert.NotNil(t, err)
+}
+
 func TestDropFromDBShouldRemoveCollection(t *testing.T) {
 	DropFromDB()
 	SaveToMongoDB(testUser)

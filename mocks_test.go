@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/stretchr/gomniauth/test"
 	"github.com/stretchr/gomniauth/common"
+	"github.com/stretchr/objx"
 )
 
 func GetTestUser() *test.TestUser {
@@ -13,5 +14,6 @@ func GetTestUser() *test.TestUser {
 	testUser.On("AvatarURL").Return("http://mygravatar.com")
 	testUser.On("AuthCode").Return("123")
 	testUser.On("ProviderCredentials").Return(make(map[string]*common.Credentials))
+	testUser.On("Data").Return(make(objx.Map))
 	return testUser
 }
