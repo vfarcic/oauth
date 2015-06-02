@@ -34,7 +34,6 @@ func main() {
 		// TODO: Change URI to param
 		http.HandleFunc(fmt.Sprintf("/auth/%s/login", providerName), loginHandler(provider))
 		// TODO: Change URI to param
-		// TODO: Change URL (google.com) to param
 		http.HandleFunc(
 			fmt.Sprintf("/auth/%s/callback", providerName),
 			callbackHandler(provider, vars.redirectUrl, SaveToMongoDB))
@@ -63,6 +62,8 @@ func setGomniAuth(vars Vars) {
 }
 
 // TODO: Add GET API
-// TODO: Create Dockerfile
+// TODO: Change Dockerfile FROM to Alpine Linux
+// TODO: Add to Travis
+// TODO: Add to Docker Hub
 // TODO: Publish to hub.docker.com
 // TODO: Promote

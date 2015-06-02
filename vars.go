@@ -39,6 +39,11 @@ func GetVars(flagUtilFunc flagUtilGetter) Vars {
 		fmt.Println("Security key is mandatory")
 		os.Exit(1)
 	}
+	if len(*redirectUrl) == 0 {
+		fmt.Println("Redirect URL is mandatory")
+		os.Exit(1)
+	}
+	log.Println("Google OAuth is set")
 	return Vars{
 		host: *host,
 		secKey: *secKey,
@@ -52,7 +57,6 @@ func getProvider(name string, clientId string, secret string, redirectUrl string
 		fmt.Println("All", name, "data needs to be set when", strings.ToLower(name) + "-client-id", "is specified")
 		os.Exit(1)
 	}
-	log.Println(name, "OAuth is set")
 	return &provider{
 		clientId,
 		secret,
