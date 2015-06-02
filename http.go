@@ -13,7 +13,7 @@ func loginHandler(provider common.Provider) http.HandlerFunc {
 	}
 }
 
-func callbackHandler(provider common.Provider, redirectURL string) http.HandlerFunc {
+func callbackHandler(provider common.Provider, redirectURL string, dbHandler func(user MongoUser) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query, _ := objx.FromURLQuery(r.URL.RawQuery)
 		creds, err := provider.CompleteAuth(query)
@@ -26,8 +26,7 @@ func callbackHandler(provider common.Provider, redirectURL string) http.HandlerF
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// TODO: Test
-		SaveToDB(getMongoUser(user))
+		dbHandler(getMongoUser(user))
 		http.Redirect(w, r, redirectURL, http.StatusFound)
 	}
 }

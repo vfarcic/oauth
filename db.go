@@ -6,7 +6,7 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
-type mongoUser struct {
+type MongoUser struct {
 	Email string
 	Name string
 	Nickname string
@@ -15,8 +15,8 @@ type mongoUser struct {
 	AuthCode string
 }
 
-func getMongoUser(user common.User) mongoUser {
-	return mongoUser {
+func getMongoUser(user common.User) MongoUser {
+	return MongoUser {
 		Email: user.Email(),
 		Name: user.Name(),
 		Nickname: user.Nickname(),
@@ -26,7 +26,9 @@ func getMongoUser(user common.User) mongoUser {
 	}
 }
 
-func SaveToDB(user mongoUser) error {
+type SaveToDB func(MongoUser) error
+
+func SaveToMongoDB(user MongoUser) error {
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
@@ -34,11 +36,11 @@ func SaveToDB(user mongoUser) error {
 	return err
 }
 
-func GetFromDB(email string) (mongoUser, error) {
+func GetFromDB(email string) (MongoUser, error) {
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
-	users := mongoUser{}
+	users := MongoUser{}
 	err := c.Find(bson.M{"email": email}).One(&users)
 	return users, err
 }

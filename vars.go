@@ -11,9 +11,10 @@ import (
 type Vars struct {
 	host string
 	secKey string
+	redirectUrl string
 	googleProvider provider
+	facebookProvider provider
 	// TODO: Add the rest of providers
-	//	facebookProvider provider
 	//	githubProvider provider
 	//	herokuProvider provider
 	//	soundcloudProvider provider
@@ -28,6 +29,7 @@ type provider struct {
 func GetVars(flagUtilFunc flagUtilGetter) Vars {
 	host := flagUtilFunc("host", "Application host", ":8080", false)
 	secKey := flagUtilFunc("sec-key", "Security key", "", true)
+	redirectUrl := flagUtilFunc("redirect-url", "Redirect URL", "", false)
 	googleClientId := flagUtilFunc("google-client-id", "Google Client ID", "", false)
 	googleSecret := flagUtilFunc("google-secret", "Google Secret", "", false)
 	googleRedirectUrl := flagUtilFunc("google-redirect-url", "Google Redirect URL", "", false)
@@ -40,6 +42,7 @@ func GetVars(flagUtilFunc flagUtilGetter) Vars {
 	return Vars{
 		host: *host,
 		secKey: *secKey,
+		redirectUrl: *redirectUrl,
 		googleProvider: *googleProvider,
 	}
 }

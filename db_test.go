@@ -8,29 +8,29 @@ import (
 
 var testUser = getMongoUser(GetTestUser())
 
-func TestSaveToDBShouldInsertData(t *testing.T) {
+func TestSaveToMongoDBShouldInsertData(t *testing.T) {
 	DropFromDB()
-	SaveToDB(testUser)
+	SaveToMongoDB(testUser)
 
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
-	actual := mongoUser{}
+	actual := MongoUser{}
 	err := c.Find(bson.M{"email": testUser.Email}).One(&actual)
 
 	assert.Nil(t, err)
 	assert.Equal(t, testUser, actual)
 }
 
-func TestSaveToDBShouldUpdateWhenEmailExists(t *testing.T) {
+func TestSaveToMongoDBShouldUpdateWhenEmailExists(t *testing.T) {
 	DropFromDB()
-	SaveToDB(testUser)
-	SaveToDB(testUser)
+	SaveToMongoDB(testUser)
+	SaveToMongoDB(testUser)
 
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
-	actual := []mongoUser{}
+	actual := []MongoUser{}
 	err := c.Find(bson.M{"email": testUser.Email}).All(&actual)
 
 	assert.Nil(t, err)
@@ -39,7 +39,7 @@ func TestSaveToDBShouldUpdateWhenEmailExists(t *testing.T) {
 
 func TestGetFromDBShouldReturnData(t *testing.T) {
 	DropFromDB()
-	SaveToDB(testUser)
+	SaveToMongoDB(testUser)
 
 	actual, err := GetFromDB(testUser.Email)
 
@@ -55,14 +55,14 @@ func TestGetFromDBShouldReturnErrorWhenNonExistent(t *testing.T) {
 
 func TestDropFromDBShouldRemoveCollection(t *testing.T) {
 	DropFromDB()
-	SaveToDB(testUser)
+	SaveToMongoDB(testUser)
 
 	err := DropFromDB()
 
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
-	actual := []mongoUser{}
+	actual := []MongoUser{}
 	c.Find(nil).All(&actual)
 	assert.Nil(t, err)
 	assert.Len(t, actual, 0)

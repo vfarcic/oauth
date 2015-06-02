@@ -34,7 +34,7 @@ func TestCallbackHandlerShouldRedirectToUrl(t *testing.T) {
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
 
 	assert.Equal(t, redirectUrl, w.Header().Get("Location"))
 }
@@ -44,7 +44,7 @@ func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFailsl(t 
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
@@ -54,7 +54,7 @@ func TestCallbackHandlerShouldReturnInternalServerErrorWhenGetUserFails(t *testi
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
@@ -72,4 +72,8 @@ func getMockedCallbackProvider(completeAuthError error, getUserError error) comm
 func init() {
 	log.SetOutput(ioutil.Discard)
 	setGomniAuth(TestVars)
+}
+
+func SaveToMockedDB(user MongoUser) error {
+	return nil
 }

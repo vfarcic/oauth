@@ -118,6 +118,12 @@ func TestGetVarsShouldInvokeFlagUtilForGoogleRedirectUrl(t *testing.T) {
 	assert.Equal(t, expected, vars.googleProvider.redirectUrl)
 }
 
+func TestGetVarsShouldInvokeFlagUtilForRedirectUrl(t *testing.T) {
+	expected := *mockedFlagUtil("redirect-url", "", "", false)
+	vars := GetVars(mockedFlagUtil)
+	assert.Equal(t, expected, vars.redirectUrl)
+}
+
 func init() {
 	log.SetOutput(ioutil.Discard)
 }
