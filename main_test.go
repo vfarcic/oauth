@@ -13,13 +13,13 @@ func TestGetGoogleProviderShouldSetClientId(t *testing.T) {
 }
 
 func TestSetGomniAuthShouldSetSecurityKey(t *testing.T) {
-	setGomniAuth(TestVars)
+	getProviders(TestVars)
 
 	assert.Equal(t, TestVars.secKey, gomniauth.GetSecurityKey())
 }
 
 func TestSetGomniAuthShouldHaveGoogleProvider(t *testing.T) {
-	setGomniAuth(TestVars)
+	getProviders(TestVars)
 
 	assert.Contains(t, gomniauth.SharedProviderList.Providers(), getGoogleProvider(TestVars))
 }

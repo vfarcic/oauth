@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/gomniauth/common"
 	"strings"
 	"encoding/json"
+	"log"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
@@ -43,7 +44,9 @@ func userApiHandler(dbHandler func(authID string) (MongoUser, error)) http.Handl
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		json.NewEncoder(w).Encode(users)
+		log.Println("222")
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		json.NewEncoder(w).Encode(users)
 	}
 }

@@ -59,13 +59,27 @@ func TestUserApiHandlerShouldReturnInternalServerErrorWhenDbReturnsAnError(t *te
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
 
+func TestUserApiHandlerShouldReturnJson(t *testing.T) {
+	w := doTestUserApiRequest()
+	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
+}
+
+func TestUserApiHandlerShouldAllowAllOrigins(t *testing.T) {
+	w := doTestUserApiRequest()
+	assert.Equal(t, "*", w.Header().Get("Access-Control-Allow-Origin"))
+}
+
 func TestUserApiHandlerShouldReturnUserFromDB(t *testing.T) {
+	w := doTestUserApiRequest()
+	json, _ := json.Marshal(testUser)
+	assert.Equal(t, string(json) + "\n", w.Body.String())
+}
+
+func doTestUserApiRequest() *httptest.ResponseRecorder {
 	req, _ := http.NewRequest("GET", apiUserUrl, nil)
 	w := httptest.NewRecorder()
 	userApiHandler(GetFromDBByAuthIDMocked)(w, req)
-	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
-	json, _ := json.Marshal(testUser)
-	assert.Equal(t, string(json) + "\n", w.Body.String())
+	return w
 }
 
 func TestCallbackHandlerShouldReturnInternalServerErrorWhenGetUserFails(t *testing.T) {
@@ -90,7 +104,7 @@ func getMockedCallbackProvider(completeAuthError error, getUserError error) comm
 
 func init() {
 	log.SetOutput(ioutil.Discard)
-	setGomniAuth(TestVars)
+	getProviders(TestVars)
 }
 
 func SaveToMockedDB(user MongoUser) error {
