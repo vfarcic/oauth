@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 mongod &
-oauth "$@"
+$PWD/oauth "$@"

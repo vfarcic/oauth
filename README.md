@@ -62,10 +62,10 @@ sudo docker run -d --name mongo -p 27017:27017 mongo
 
 go build -o oauth && ./oauth \
 	-sec-key=bla \
+	-redirect-url='http://localhost:8080/components/test.html' \
 	-google-client-id='472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com' \
 	-google-secret='OnkptU4BTdE45mi-b3hACdAY' \
-	-google-redirect-url='http://localhost:8080/auth/google/callback' \
-	-redirect-url='http://www.wikipedia.org'
+	-google-redirect-url='http://localhost:8080/auth/google/callback'
 ```
 
 

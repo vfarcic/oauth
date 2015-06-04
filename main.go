@@ -9,26 +9,35 @@ import (
 	"fmt"
 	"net/http"
 	"log"
+//	"github.com/gorilla/mux"
+	phttp "github.com/pikanezi/http"
 )
 
 func main() {
 	vars := GetVars(flagUtil)
 	providerNames := getProviders(vars)
+	r := phttp.NewRouter()
+	r.SetCustomHeader(phttp.Header{
+		"Access-Control-Allow-Origin": "*",
+	})
 	for _, providerName := range providerNames {
 		provider, err := gomniauth.Provider(providerName)
 		if err != nil {
 			panic(err)
 		}
 		// TODO: Change URI to param
-		http.HandleFunc(fmt.Sprintf("/auth/%s/login", providerName), loginHandler(provider))
+		r.HandleFunc(fmt.Sprintf("/auth/%s/login", providerName), loginHandler(provider))
 		// TODO: Change URI to param
-		http.HandleFunc(
+		r.HandleFunc(
 			fmt.Sprintf("/auth/%s/callback", providerName),
 			callbackHandler(provider, vars.redirectUrl, SaveToMongoDB))
 	}
 	// TODO: Test
-	http.HandleFunc("/api/v1/user/", userApiHandler(GetFromDBByAuthID))
-	if err := http.ListenAndServe(vars.host, nil); err != nil {
+	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(GetFromDBByAuthID))
+	// TODO: Test
+	r.PathPrefix("/").PathPrefix("/components/").Handler(
+		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
+	if err := http.ListenAndServe(vars.host, r); err != nil {
 		log.Fatalln("Could not initiate the server", vars.host, " - ", err)
 	}
 	log.Println("Started the server on", vars.host)

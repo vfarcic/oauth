@@ -3,12 +3,14 @@ FROM debian:jessie
 RUN apt-get update && \
     apt-get install -y mongodb
 
-RUN mkdir -p /data/db /etc/ssl/certs
+RUN mkdir -p /data/db /etc/ssl/certs /app
 
-COPY oauth /usr/bin/oauth
-RUN chmod +x /usr/bin/oauth
-COPY run.sh /usr/bin/oauth.sh
-RUN chmod +x /usr/bin/oauth.sh
+COPY run.sh /app/oauth.sh
+RUN chmod +x /app/oauth.sh
+COPY components /app/components
+COPY oauth /app/oauth
+RUN chmod +x /app/oauth
+
 
 ENV HOST ":8080"
 ENV SEC_KEY ""
@@ -17,4 +19,5 @@ ENV GOOGLE_CLIENT_ID ""
 ENV GOOGLE_SECRET ""
 ENV GOOGLE_REDIRECT_URL ""
 
-CMD ["oauth.sh"]
+WORKDIR /app/
+CMD ["/app/oauth.sh"]
