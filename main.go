@@ -9,13 +9,13 @@ import (
 	"fmt"
 	"net/http"
 	"log"
-//	"github.com/gorilla/mux"
 	phttp "github.com/pikanezi/http"
 )
 
 func main() {
 	vars := GetVars(flagUtil)
 	providerNames := getProviders(vars)
+	addr := ":" + vars.port
 	r := phttp.NewRouter()
 	r.SetCustomHeader(phttp.Header{
 		"Access-Control-Allow-Origin": "*",
@@ -35,12 +35,12 @@ func main() {
 	// TODO: Test
 	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(GetFromDBByAuthID))
 	// TODO: Test
-	r.PathPrefix("/").PathPrefix("/components/").Handler(
+	r.PathPrefix("/components/").Handler(
 		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
-	if err := http.ListenAndServe(vars.host, r); err != nil {
-		log.Fatalln("Could not initiate the server", vars.host, " - ", err)
+	if err := http.ListenAndServe(addr, r); err != nil {
+		log.Fatalln("Could not initiate the server", addr, " - ", err)
 	}
-	log.Println("Started the server on", vars.host)
+	log.Println("Started the server on", addr)
 }
 
 func getGoogleProvider(vars Vars) common.Provider {

@@ -24,7 +24,8 @@ Google authentication data can be created in [Google Developers Console](https:/
 
 Following environment variables can be used:
 
-* HOST: Host where the application is running. Defaults to ":8080"
+* DOMAIN: Domain in which the application is running. Defaults to **localhost**.
+* PORT: Port in which the application is running. Defaults to **8080**.
 * SEC_KEY: Security key. This is mandatory variable.
 * REDIRECT_URL: URL where users will be redirected to after authenticating. This is mandatory variable.
 * GOOGLE_CLIENT_ID: Google client ID. This is mandatory variable if google authentication is used.
@@ -39,8 +40,9 @@ sudo docker run -d --name oauth \
 	-p 8080:8080 \
 	-v /etc/ssl/certs:/etc/ssl/certs \
 	-v /data/oauth:/data/db \
+	-e PORT=8080 \
 	-e SEC_KEY="Bla" \
-	-e REDIRECT_URL="http://www.wikipedia.org" \
+	-e REDIRECT_URL="http://localhost:8080/components/test.html" \
 	-e GOOGLE_CLIENT_ID="472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com" \
 	-e GOOGLE_SECRET="OnkptU4BTdE45mi-b3hACdAY" \
 	-e GOOGLE_REDIRECT_URL="http://localhost:8080/auth/google/callback" \

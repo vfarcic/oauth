@@ -12,12 +12,15 @@ COPY oauth /app/oauth
 RUN chmod +x /app/oauth
 
 
-ENV HOST ":8080"
+ENV DOMAIN "localhost"
+ENV PORT "8080"
 ENV SEC_KEY ""
 ENV REDIRECT_URL ""
 ENV GOOGLE_CLIENT_ID ""
 ENV GOOGLE_SECRET ""
 ENV GOOGLE_REDIRECT_URL ""
+
+EXPOSE 8080
 
 WORKDIR /app/
 CMD ["/app/oauth.sh"]

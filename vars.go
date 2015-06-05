@@ -9,7 +9,8 @@ import (
 )
 
 type Vars struct {
-	host string
+	domain string
+	port string
 	secKey string
 	redirectUrl string
 	googleProvider provider
@@ -27,7 +28,8 @@ type provider struct {
 }
 
 func GetVars(flagUtilFunc flagUtilGetter) Vars {
-	host := flagUtilFunc("host", "Application host", ":8080", false)
+	domain := flagUtilFunc("domain", "Application domain", "", false)
+	port := flagUtilFunc("port", "Application port", "8080", false)
 	secKey := flagUtilFunc("sec-key", "Security key", "", true)
 	redirectUrl := flagUtilFunc("redirect-url", "Redirect URL", "", false)
 	googleClientId := flagUtilFunc("google-client-id", "Google Client ID", "", false)
@@ -45,7 +47,8 @@ func GetVars(flagUtilFunc flagUtilGetter) Vars {
 	}
 	log.Println("Google OAuth is set")
 	return Vars{
-		host: *host,
+		domain: *domain,
+		port: *port,
 		secKey: *secKey,
 		redirectUrl: *redirectUrl,
 		googleProvider: *googleProvider,

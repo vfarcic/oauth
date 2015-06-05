@@ -88,10 +88,16 @@ func TestGetProviderShouldContainAllData(t *testing.T) {
 	assert.Equal(t, expected, provider)
 }
 
-func TestGetVarsShouldInvokeFlagUtilForHost(t *testing.T) {
-	expected := *mockedFlagUtil("host", "", "", false)
+func TestGetVarsShouldInvokeFlagUtilForDomain(t *testing.T) {
+	expected := *mockedFlagUtil("domain", "", "", false)
 	vars := GetVars(mockedFlagUtil)
-	assert.Equal(t, expected, vars.host)
+	assert.Equal(t, expected, vars.domain)
+}
+
+func TestGetVarsShouldInvokeFlagUtilForPort(t *testing.T) {
+	expected := *mockedFlagUtil("port", "", "", false)
+	vars := GetVars(mockedFlagUtil)
+	assert.Equal(t, expected, vars.port)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForSecKey(t *testing.T) {
@@ -143,7 +149,8 @@ func mockedFlagUtilWithEmptyReturn(name string, fullName string, defaultValue st
 }
 
 var TestVars = Vars {
-	host: "MY_DOMAIN",
+	domain: "MY_DOMAIN",
+	port: "1234",
 	secKey: "MY_SECURITY_KEY",
 	googleProvider: provider {
 		clientId: "MY_GOOGLE_CLIENT_ID",

@@ -5,9 +5,11 @@ import (
 	"github.com/stretchr/objx"
 	"github.com/stretchr/gomniauth/common"
 	"encoding/json"
+	"log"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
+	log.Println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 	return func(w http.ResponseWriter, r *http.Request) {
 		url, _ := provider.GetBeginAuthURL(nil, nil)
 		http.Redirect(w, r, url, http.StatusFound)
