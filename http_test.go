@@ -38,7 +38,7 @@ func TestCallbackHandlerShouldRedirectToUrl(t *testing.T) {
 	w := httptest.NewRecorder()
 	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
 
-	assert.Equal(t, redirectUrl + "?authid=", w.Header().Get("Location"))
+	assert.Equal(t, redirectUrl + "?authID=", w.Header().Get("Location"))
 }
 
 func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFails(t *testing.T) {
@@ -62,11 +62,6 @@ func TestUserApiHandlerShouldReturnInternalServerErrorWhenDbReturnsAnError(t *te
 func TestUserApiHandlerShouldReturnJson(t *testing.T) {
 	w := doTestUserApiRequest()
 	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
-}
-
-func TestUserApiHandlerShouldAllowAllOrigins(t *testing.T) {
-	w := doTestUserApiRequest()
-	assert.Equal(t, "*", w.Header().Get("Access-Control-Allow-Origin"))
 }
 
 func TestUserApiHandlerShouldReturnUserFromDB(t *testing.T) {

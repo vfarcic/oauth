@@ -1,0 +1,43 @@
+<dom-module id="who-am-i">
+    <style></style>
+    <template>
+        <iron-image style="width:75px; height:75px;" sizing="cover"
+                    src="http://lorempixel.com/600/400" id="avatarURL"></iron-image>
+        <div>
+            <span id="fullName"></span>
+            <a href="/logout">Sign Out</a>
+        </div>
+
+        <content></content>
+
+        <iron-ajax
+                id="ajax"
+                handle-as="json"
+                on-response="handleResponse">
+        </iron-ajax>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "who-am-i",
+        properties: {
+            backendHost: {
+                type: String,
+                value: "http://localhost"
+            }
+        },
+        ready: function() {
+            var regex = new RegExp("[\\?&]authID=([^&#]*)");
+            var results = regex.exec(location.search);
+            var authID = results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            var url = this.backendHost + "/auth/api/v1/user/" + authID
+            this.$.ajax.url = url;
+            this.$.ajax.generateRequest();
+        },
+        handleResponse: function(request) {
+            var json = request.detail.response;
+            this.$.fullName.textContent = json.name;
+            this.$.avatarURL.setAttribute("src", json.avatar_url);
+        }
+    });
+</script>
