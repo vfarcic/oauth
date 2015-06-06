@@ -5,11 +5,9 @@ import (
 	"github.com/stretchr/objx"
 	"github.com/stretchr/gomniauth/common"
 	"encoding/json"
-	"log"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
-	log.Println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 	return func(w http.ResponseWriter, r *http.Request) {
 		url, _ := provider.GetBeginAuthURL(nil, nil)
 		http.Redirect(w, r, url, http.StatusFound)
@@ -30,6 +28,14 @@ func callbackHandler(provider common.Provider, redirectURL string, dbHandler fun
 			return
 		}
 		dbHandler(getMongoUser(user))
+		http.SetCookie(w, &http.Cookie{
+			Name: "authName",
+			Value: user.Name(),
+			Path: "/"})
+		http.SetCookie(w, &http.Cookie{
+			Name: "authAvatarURL",
+			Value: user.AvatarURL(),
+			Path: "/"})
 		url := redirectURL + "?authID=" + user.Data().Get("id").Str()
 		http.Redirect(w, r, url, http.StatusFound)
 	}
@@ -47,9 +53,3 @@ func userApiHandler(dbHandler func(authID string) (MongoUser, error)) http.Handl
 		json.NewEncoder(w).Encode(users)
 	}
 }
-
-//func allowOrigin() http.Handler {
-//	return func(w http.ResponseWriter, r *http.Request) {
-//
-//	}
-//}

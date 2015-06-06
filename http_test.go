@@ -19,6 +19,9 @@ var redirectUrl = "http://example.com/redirect"
 var callbackUrl = "http://example.com/foo?code=4/klISKMqMfj2ErEykXTEI94kyhspflKAzbTih1eheJ4I.AlMYdYp5IQ4YEnp6UAPFm0GKMKMymwI"
 var apiUserUrl = "http://example.com/api/v1/user/123456789"
 
+
+// loginHandler
+
 func TestLoginHandlerShouldRedirectToProviderUrl(t *testing.T) {
 	testProvider := new(test.TestProvider)
 	testProvider.On("GetBeginAuthURL", mock.Anything, mock.Anything).Return(googleUrl, nil)
@@ -30,6 +33,8 @@ func TestLoginHandlerShouldRedirectToProviderUrl(t *testing.T) {
 
 	assert.Equal(t, expected, w.Header().Get("Location"))
 }
+
+// callbackHandler
 
 func TestCallbackHandlerShouldRedirectToUrl(t *testing.T) {
 	mockedProvider := getMockedCallbackProvider(nil, nil)
@@ -50,6 +55,40 @@ func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFails(t *
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
+
+func TestCallbackHandlerShouldReturnInternalServerErrorWhenGetUserFails(t *testing.T) {
+	mockedProvider := getMockedCallbackProvider(nil, errors.New("This is an GetUser error"))
+
+	req, _ := http.NewRequest("GET", callbackUrl, nil)
+	w := httptest.NewRecorder()
+	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+}
+
+func TestCallbackHandlerShouldSetAuthNameCookie(t *testing.T) {
+	mockedProvider := getMockedCallbackProvider(nil, nil)
+	expectedUser, _ := mockedProvider.GetUser(nil)
+
+	req, _ := http.NewRequest("GET", callbackUrl, nil)
+	w := httptest.NewRecorder()
+	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+
+	assert.Contains(t, w.Header().Get("Set-Cookie"), "authName=" + expectedUser.Name())
+}
+
+func TestCallbackHandlerShouldSetAuthAvatarURLCookie(t *testing.T) {
+	mockedProvider := getMockedCallbackProvider(nil, nil)
+	expectedUser, _ := mockedProvider.GetUser(nil)
+
+	req, _ := http.NewRequest("GET", callbackUrl, nil)
+	w := httptest.NewRecorder()
+	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+
+	assert.Contains(t, w.Header().Get("Set-Cookie"), "authAvatarURL=" + expectedUser.AvatarURL())
+}
+
+// userApi
 
 func TestUserApiHandlerShouldReturnInternalServerErrorWhenDbReturnsAnError(t *testing.T) {
 	req, _ := http.NewRequest("GET", apiUserUrl, nil)
@@ -77,15 +116,7 @@ func doTestUserApiRequest() *httptest.ResponseRecorder {
 	return w
 }
 
-func TestCallbackHandlerShouldReturnInternalServerErrorWhenGetUserFails(t *testing.T) {
-	mockedProvider := getMockedCallbackProvider(nil, errors.New("This is an GetUser error"))
-
-	req, _ := http.NewRequest("GET", callbackUrl, nil)
-	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
-
-	assert.Equal(t, http.StatusInternalServerError, w.Code)
-}
+// Helper
 
 func getMockedCallbackProvider(completeAuthError error, getUserError error) common.Provider {
 	creds := &common.Credentials{
