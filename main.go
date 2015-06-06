@@ -30,10 +30,10 @@ func main() {
 		// TODO: Change URI to param
 		r.HandleFunc(
 			fmt.Sprintf("/auth/%s/callback", providerName),
-			callbackHandler(provider, vars.redirectUrl, SaveToMongoDB))
+			callbackHandler(provider, vars.redirectUrl, MongoDB{}))
 	}
 	// TODO: Test
-	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(GetFromDBByAuthID))
+	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(MongoDB{}))
 	// TODO: Test
 	r.PathPrefix("/components/").Handler(
 		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))

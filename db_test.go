@@ -6,11 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var testUser = getMongoUser(GetTestUser())
+var db = MongoDB{}
+var testUser = GetMongoUser(GetTestUser())
 
 func TestSaveToMongoDBShouldInsertData(t *testing.T) {
 	DropFromDB()
-	SaveToMongoDB(testUser)
+	db.Save(testUser)
 
 	session := getSession()
 	defer session.Close()
@@ -24,8 +25,8 @@ func TestSaveToMongoDBShouldInsertData(t *testing.T) {
 
 func TestSaveToMongoDBShouldUpdateWhenEmailExists(t *testing.T) {
 	DropFromDB()
-	SaveToMongoDB(testUser)
-	SaveToMongoDB(testUser)
+	db.Save(testUser)
+	db.Save(testUser)
 
 	session := getSession()
 	defer session.Close()
@@ -39,39 +40,39 @@ func TestSaveToMongoDBShouldUpdateWhenEmailExists(t *testing.T) {
 
 func TestGetFromDBShouldReturnData(t *testing.T) {
 	DropFromDB()
-	SaveToMongoDB(testUser)
+	db.Save(testUser)
 
-	actual, err := GetFromDB(testUser.Email)
+	actual, err := db.Get(testUser.Email)
 
 	assert.Nil(t, err)
 	assert.Equal(t, testUser, actual)
 }
 
 func TestGetFromDBShouldReturnErrorWhenNonExistent(t *testing.T) {
-	_, err := GetFromDB("john.doe@gmail.com")
+	_, err := db.Get("john.doe@gmail.com")
 
 	assert.NotNil(t, err)
 }
 
 func TestGetFromDBByAuthIDShouldReturnData(t *testing.T) {
 	DropFromDB()
-	SaveToMongoDB(testUser)
+	db.Save(testUser)
 
-	actual, err := GetFromDBByAuthID(testUser.AuthID)
+	actual, err := db.GetByAuthID(testUser.AuthID)
 
 	assert.Nil(t, err)
 	assert.Equal(t, testUser, actual)
 }
 
 func TestGetFromDBByAuthIDShouldReturnErrorWhenNonExistent(t *testing.T) {
-	_, err := GetFromDBByAuthID("111111111111111")
+	_, err := db.GetByAuthID("111111111111111")
 
 	assert.NotNil(t, err)
 }
 
 func TestDropFromDBShouldRemoveCollection(t *testing.T) {
 	DropFromDB()
-	SaveToMongoDB(testUser)
+	db.Save(testUser)
 
 	err := DropFromDB()
 

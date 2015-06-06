@@ -5,13 +5,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"github.com/stretchr/testify/assert"
-	"log"
-	"io/ioutil"
 	"github.com/stretchr/gomniauth/test"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/gomniauth/common"
+//	"encoding/json"
 	"errors"
-	"encoding/json"
 )
 
 var googleUrl = "http://google.com/auth"
@@ -37,42 +35,48 @@ func TestLoginHandlerShouldRedirectToProviderUrl(t *testing.T) {
 // callbackHandler
 
 func TestCallbackHandlerShouldRedirectToUrl(t *testing.T) {
+	testDB := new(TestDB)
+	testDB.On("Save", mock.Anything).Return(nil)
 	mockedProvider := getMockedCallbackProvider(nil, nil)
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, testDB)(w, req)
 
 	assert.Equal(t, redirectUrl + "?authID=", w.Header().Get("Location"))
 }
 
 func TestCallbackHandlerShouldReturnInternalServerErrorWhenCompleteAuthFails(t *testing.T) {
+	testDB := new(TestDB)
 	mockedProvider := getMockedCallbackProvider(errors.New("This is an CompleteAuth error"), nil)
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, testDB)(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
 
 func TestCallbackHandlerShouldReturnInternalServerErrorWhenGetUserFails(t *testing.T) {
+	testDB := new(TestDB)
 	mockedProvider := getMockedCallbackProvider(nil, errors.New("This is an GetUser error"))
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, testDB)(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
 
 func TestCallbackHandlerShouldSetAuthNameCookie(t *testing.T) {
+	testDB := new(TestDB)
+	testDB.On("Save", mock.Anything).Return(nil)
 	mockedProvider := getMockedCallbackProvider(nil, nil)
 	expectedUser, _ := mockedProvider.GetUser(nil)
 
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
-	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
+	callbackHandler(mockedProvider, redirectUrl, testDB)(w, req)
 
 	assert.Contains(t, w.Header().Get("Set-Cookie"), "authName=" + expectedUser.Name())
 }
@@ -104,9 +108,11 @@ func TestCallbackHandlerShouldSetAuthNameCookie(t *testing.T) {
 // userApi
 
 func TestUserApiHandlerShouldReturnInternalServerErrorWhenDbReturnsAnError(t *testing.T) {
+	testDB := new(TestDB)
+	testDB.On("GetByAuthID", mock.Anything).Return(testUser, errors.New("SOME ERROR"))
 	req, _ := http.NewRequest("GET", apiUserUrl, nil)
 	w := httptest.NewRecorder()
-	userApiHandler(GetFromDBByAuthIDMockedWithError)(w, req)
+	userApiHandler(testDB)(w, req)
 
 	assert.Equal(t, http.StatusInternalServerError, w.Code)
 }
@@ -116,18 +122,12 @@ func TestUserApiHandlerShouldReturnJson(t *testing.T) {
 	assert.Equal(t, "application/json", w.Header().Get("Content-Type"))
 }
 
-func TestUserApiHandlerShouldReturnUserFromDB(t *testing.T) {
-	w := doTestUserApiRequest()
-	json, _ := json.Marshal(testUser)
-	assert.Equal(t, string(json) + "\n", w.Body.String())
-}
-
-func doTestUserApiRequest() *httptest.ResponseRecorder {
-	req, _ := http.NewRequest("GET", apiUserUrl, nil)
-	w := httptest.NewRecorder()
-	userApiHandler(GetFromDBByAuthIDMocked)(w, req)
-	return w
-}
+//func TestUserApiHandlerShouldReturnUserFromDB(t *testing.T) {
+//	w := doTestUserApiRequest()
+//	json, _ := json.Marshal(testUser)
+//	assert.Equal(t, string(json) + "\n", w.Body.String())
+//}
+//
 
 // Helper
 
@@ -141,19 +141,11 @@ func getMockedCallbackProvider(completeAuthError error, getUserError error) comm
 	return testProvider
 }
 
-func init() {
-	log.SetOutput(ioutil.Discard)
-	getProviders(TestVars)
-}
-
-func SaveToMockedDB(user MongoUser) error {
-	return nil
-}
-
-func GetFromDBByAuthIDMocked(authID string) (MongoUser, error) {
-	return testUser, nil
-}
-
-func GetFromDBByAuthIDMockedWithError(authID string) (MongoUser, error) {
-	return testUser, errors.New("This is an error")
+func doTestUserApiRequest() *httptest.ResponseRecorder {
+	testDB := new(TestDB)
+	testDB.On("GetByAuthID", mock.Anything).Return(testUser, nil)
+	req, _ := http.NewRequest("GET", apiUserUrl, nil)
+	w := httptest.NewRecorder()
+	userApiHandler(testDB)(w, req)
+	return w
 }

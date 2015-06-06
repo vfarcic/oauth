@@ -14,7 +14,7 @@ func loginHandler(provider common.Provider) http.HandlerFunc {
 	}
 }
 
-func callbackHandler(provider common.Provider, redirectURL string, dbHandler func(user MongoUser) error) http.HandlerFunc {
+func callbackHandler(provider common.Provider, redirectURL string, db DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query, _ := objx.FromURLQuery(r.URL.RawQuery)
 		creds, err := provider.CompleteAuth(query)
@@ -28,7 +28,7 @@ func callbackHandler(provider common.Provider, redirectURL string, dbHandler fun
 			return
 		}
 		authID := user.Data().Get("id").Str()
-		dbHandler(getMongoUser(user))
+		db.Save(GetMongoUser(user))
 		http.SetCookie(w, &http.Cookie{
 			Name: "authName",
 			Value: user.Name(),
@@ -46,10 +46,10 @@ func callbackHandler(provider common.Provider, redirectURL string, dbHandler fun
 	}
 }
 
-func userApiHandler(dbHandler func(authID string) (MongoUser, error)) http.HandlerFunc {
+func userApiHandler(db DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authID := r.URL.Query().Get(":id")
-		users, err := dbHandler(authID)
+		users, err := db.GetByAuthID(authID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

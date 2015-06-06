@@ -6,31 +6,16 @@ import (
 	"labix.org/v2/mgo/bson"
 )
 
-type MongoUser struct {
-	Email string `json:"email"`
-	Name string `json:"name"`
-	Nickname string `json:"nickname"`
-	AvatarURL string `json:"avatar_url"`
-	ProviderCredentials map[string]*common.Credentials `json:"provider_credentials"`
-	AuthCode string `json:"auth_code"`
-	AuthID string `json:"auth_id"`
+type DB interface {
+	Save(user MongoUser) error
+	Get(email string) (MongoUser, error)
+	GetByAuthID(authID string) (MongoUser, error)
 }
 
-func getMongoUser(user common.User) MongoUser {
-	return MongoUser {
-		Email: user.Email(),
-		Name: user.Name(),
-		Nickname: user.Nickname(),
-		AvatarURL: user.AvatarURL(),
-		AuthCode: user.AuthCode(),
-		ProviderCredentials: user.ProviderCredentials(),
-		AuthID: user.Data().Get("id").Str(),
-	}
+type MongoDB struct {
 }
 
-type SaveToDB func(MongoUser) error
-
-func SaveToMongoDB(user MongoUser) error {
+func (db MongoDB) Save(user MongoUser) error {
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
@@ -38,7 +23,7 @@ func SaveToMongoDB(user MongoUser) error {
 	return err
 }
 
-func GetFromDB(email string) (MongoUser, error) {
+func (db MongoDB) Get(email string) (MongoUser, error) {
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
@@ -47,7 +32,7 @@ func GetFromDB(email string) (MongoUser, error) {
 	return users, err
 }
 
-func GetFromDBByAuthID(authID string) (MongoUser, error) {
+func (db MongoDB) GetByAuthID(authID string) (MongoUser, error) {
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)
@@ -75,4 +60,26 @@ func getSession() *mgo.Session {
 		panic(err)
 	}
 	return session
+}
+
+type MongoUser struct {
+	Email string `json:"email"`
+	Name string `json:"name"`
+	Nickname string `json:"nickname"`
+	AvatarURL string `json:"avatar_url"`
+	ProviderCredentials map[string]*common.Credentials `json:"provider_credentials"`
+	AuthCode string `json:"auth_code"`
+	AuthID string `json:"auth_id"`
+}
+
+func GetMongoUser(user common.User) MongoUser {
+	return MongoUser {
+		Email: user.Email(),
+		Name: user.Name(),
+		Nickname: user.Nickname(),
+		AvatarURL: user.AvatarURL(),
+		AuthCode: user.AuthCode(),
+		ProviderCredentials: user.ProviderCredentials(),
+		AuthID: user.Data().Get("id").Str(),
+	}
 }
