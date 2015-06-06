@@ -27,6 +27,7 @@ func callbackHandler(provider common.Provider, redirectURL string, dbHandler fun
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		authID := user.Data().Get("id").Str()
 		dbHandler(getMongoUser(user))
 		http.SetCookie(w, &http.Cookie{
 			Name: "authName",
@@ -36,7 +37,11 @@ func callbackHandler(provider common.Provider, redirectURL string, dbHandler fun
 			Name: "authAvatarURL",
 			Value: user.AvatarURL(),
 			Path: "/"})
-		url := redirectURL + "?authID=" + user.Data().Get("id").Str()
+		http.SetCookie(w, &http.Cookie{
+			Name: "authID",
+			Value: authID,
+			Path: "/"})
+		url := redirectURL + "?authID=" + authID
 		http.Redirect(w, r, url, http.StatusFound)
 	}
 }

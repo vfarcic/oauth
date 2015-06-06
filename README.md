@@ -1,3 +1,10 @@
+Explanation
+===========
+
+* After successful login, **authName**, **authAvatarURL** and **authID** are set and ready for your usage.
+* **/auth/google/login** will redirect to the Google authentication page, receive response, store usar data to the database and, finally, redirect the user to the URL specified with the environment variable **REDIRECT_URL** with **authID** added as a query parameter.
+* GET request to the **/auth/api/v1/user/[AUTH_ID] returns JSON with user's data. **AUTH_ID** should be replaced with the value from the **authID query or cookie**. This request can be used to obtain more information about the user or to validate it's identity.  
+
 Compile
 =======
 
