@@ -2,9 +2,12 @@
     <style></style>
     <template>
         <iron-image style="width:75px; height:75px;" sizing="cover" id="avatarURL"></iron-image>
+
         <div>
             <span id="fullName"></span>
-            <a href="/logout">Sign Out</a>
+            <paper-button id="logOut">
+                <a id="logOutLink">Log Out</a>
+            </paper-button>
         </div>
 
         <content></content>
@@ -30,6 +33,7 @@
             var results = regex.exec(location.search);
             var authID = results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             var url = this.backendHost + "/auth/api/v1/user/" + authID
+            this.$.logOutLink.setAttribute("href", this.backendHost + "/auth/logout")
             this.$.ajax.url = url;
             this.$.ajax.generateRequest();
         },

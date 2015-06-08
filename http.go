@@ -58,3 +58,22 @@ func userApiHandler(db DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(users)
 	}
 }
+
+func logoutHandler(redirectURL string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		removeCookie(w, "authName")
+		removeCookie(w, "authAvatarURL")
+		removeCookie(w, "authID")
+		w.Header()["Location"] = []string{redirectURL}
+		w.WriteHeader(http.StatusTemporaryRedirect)
+	}
+}
+
+func removeCookie(w http.ResponseWriter, cookieName string) {
+	http.SetCookie(w, &http.Cookie{
+		Name: cookieName,
+		Value: "",
+		Path: "/",
+		MaxAge: -1,
+	})
+}

@@ -1,6 +1,7 @@
 package main
 
 // TODO: Test
+// TODO: Test Web Components
 // TODO: Hash (MD5) cookie values
 
 import (
@@ -33,9 +34,8 @@ func main() {
 			fmt.Sprintf("/auth/%s/callback", providerName),
 			callbackHandler(provider, vars.redirectUrl, MongoDB{}))
 	}
-	// TODO: Test
 	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(MongoDB{}))
-	// TODO: Test
+	r.HandleFunc("/auth/logout", logoutHandler(vars.redirectUrl))
 	r.PathPrefix("/components/").Handler(
 		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
 	log.Println("Starting the server on", addr)

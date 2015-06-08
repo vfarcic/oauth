@@ -77,33 +77,24 @@ func TestCallbackHandlerShouldSetAuthNameCookie(t *testing.T) {
 	req, _ := http.NewRequest("GET", callbackUrl, nil)
 	w := httptest.NewRecorder()
 	callbackHandler(mockedProvider, redirectUrl, testDB)(w, req)
-
 	assert.Contains(t, w.Header().Get("Set-Cookie"), "authName=" + expectedUser.Name())
 }
 
-// TODO: Figure out how to test multiple cookies (works only with the first one authName)
-//func TestCallbackHandlerShouldSetAuthAvatarURLCookie(t *testing.T) {
-//	mockedProvider := getMockedCallbackProvider(nil, nil)
-//	expectedUser, _ := mockedProvider.GetUser(nil)
-//
-//	req, _ := http.NewRequest("GET", callbackUrl, nil)
-//	w := httptest.NewRecorder()
-//	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
-//
-//	assert.Contains(t, w.Header().Get("Set-Cookie"), "authAvatarURL=" + expectedUser.AvatarURL())
-//}
+// TODO: Figure out how to test multiple cookies (works only with the first one authName).
+// authAvatarURL and authID are missing tests
 
-// TODO: Figure out how to test multiple cookies (works only with the first one authName)
-//func TestCallbackHandlerShouldSetAuthIDCookie(t *testing.T) {
-//	mockedProvider := getMockedCallbackProvider(nil, nil)
-//	expectedUser, _ := mockedProvider.GetUser(nil)
-//
-//	req, _ := http.NewRequest("GET", callbackUrl, nil)
-//	w := httptest.NewRecorder()
-//	callbackHandler(mockedProvider, redirectUrl, SaveToMockedDB)(w, req)
-//
-//	assert.Contains(t, w.Header().Get("Set-Cookie"), "authID=" + expectedUser.Data().Get("id").Str())
-//}
+// logoutHandler
+
+func TestLogoutHandlerShouldRemoveNameCookie(t *testing.T) {
+	req, _ := http.NewRequest("GET", "/auth/logout", nil)
+	w := httptest.NewRecorder()
+
+	logoutHandler("http://example.com/logout/redirect")(w, req)
+	assert.Contains(t, w.Header().Get("Set-Cookie"), "authName=;")
+}
+
+// TODO: Figure out how to test multiple cookies (works only with the first one authName).
+// authAvatarURL and authID are missing tests
 
 // userApi
 
