@@ -40,8 +40,8 @@ Following environment variables can be used:
 * GOOGLE_SECRET: Google client secret. This is mandatory variable if google authentication is used.
 * GOOGLE_REDIRECT_URL: Google redirect URI. This is mandatory variable if google authentication is used.
 
-Example Run
------------
+Run
+---
 
 ```bash
 sudo docker run -d --name oauth \

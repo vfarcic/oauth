@@ -1,6 +1,7 @@
 package main
 
 // TODO: Test
+// TODO: Hash (MD5) cookie values
 
 import (
 	"github.com/stretchr/gomniauth"
@@ -15,7 +16,7 @@ import (
 func main() {
 	vars := GetVars(flagUtil)
 	providerNames := getProviders(vars)
-	addr := ":" + vars.port
+	addr := vars.addr
 	r := phttp.NewRouter()
 	r.SetCustomHeader(phttp.Header{
 		"Access-Control-Allow-Origin": "*",
@@ -37,10 +38,10 @@ func main() {
 	// TODO: Test
 	r.PathPrefix("/components/").Handler(
 		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
+	log.Println("Starting the server on", addr)
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatalln("Could not initiate the server", addr, " - ", err)
 	}
-	log.Println("Started the server on", addr)
 }
 
 func getGoogleProvider(vars Vars) common.Provider {

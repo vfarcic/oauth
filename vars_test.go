@@ -94,8 +94,14 @@ func TestGetVarsShouldInvokeFlagUtilForDomain(t *testing.T) {
 	assert.Equal(t, expected, vars.domain)
 }
 
+func TestGetVarsShouldInvokeFlagUtilForAddr(t *testing.T) {
+	expected := *mockedFlagUtil("addr", "", ":8080", false)
+	vars := GetVars(mockedFlagUtil)
+	assert.Equal(t, expected, vars.addr)
+}
+
 func TestGetVarsShouldInvokeFlagUtilForPort(t *testing.T) {
-	expected := *mockedFlagUtil("port", "", "", false)
+	expected := *mockedFlagUtil("port", "", "8080", false)
 	vars := GetVars(mockedFlagUtil)
 	assert.Equal(t, expected, vars.port)
 }
