@@ -1,8 +1,11 @@
 package main
 
-// TODO: Test
-// TODO: Test Web Components
+// TODO: Test Web Components UI
 // TODO: Hash (MD5) cookie values
+// TODO: Add base tag to components
+// TODO: Add gulp with tests
+
+// TODO: Test
 
 import (
 	"github.com/stretchr/gomniauth"
@@ -38,6 +41,8 @@ func main() {
 	r.HandleFunc("/auth/logout", logoutHandler(vars.redirectUrl))
 	r.PathPrefix("/components/").Handler(
 		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
+	r.PathPrefix("/component_tests/").Handler(
+		http.StripPrefix("/component_tests/", http.FileServer(http.Dir("component_tests"))))
 	log.Println("Starting the server on", addr)
 	if err := http.ListenAndServe(addr, r); err != nil {
 		log.Fatalln("Could not initiate the server", addr, " - ", err)

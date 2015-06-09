@@ -2,16 +2,14 @@
     <style></style>
     <template>
         <iron-image style="width:75px; height:75px;" sizing="cover" id="avatarURL"></iron-image>
-
         <div>
             <span id="fullName"></span>
             <paper-button id="logOut">
                 <a id="logOutLink">Log Out</a>
             </paper-button>
         </div>
-
         <content></content>
-
+        <!--TODO: Test that on-response has handlerResponse assigned-->
         <iron-ajax
                 id="ajax"
                 handle-as="json"
@@ -32,8 +30,8 @@
             var regex = new RegExp("[\\?&]authID=([^&#]*)");
             var results = regex.exec(location.search);
             var authID = results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            var url = this.backendHost + "/auth/api/v1/user/" + authID
-            this.$.logOutLink.setAttribute("href", this.backendHost + "/auth/logout")
+            var url = this.backendHost + '/auth/api/v1/user/' + authID;
+            this.$.logOutLink.setAttribute("href", this.backendHost + "/auth/logout");
             this.$.ajax.url = url;
             this.$.ajax.generateRequest();
         },

@@ -90,3 +90,22 @@ Display Help
 ```bash
 sudo docker run --rm vfarcic/oauth oauth -help
 ```
+
+Testing
+=======
+
+Prequisites
+-----------
+
+```bash
+sudo npm install -g web-component-tester
+```
+
+Running
+-------
+
+```bash
+go test -cover
+
+sudo wct component_tests/index.html
+```
