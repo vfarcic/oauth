@@ -99,6 +99,15 @@ Prequisites
 
 ```bash
 sudo npm install -g web-component-tester
+
+STORIES_PATH=$PWD/bdd/stories
+COMPOSITES_PATH=$PWD/bdd/composites
+SCREENSHOTS_PATH=$PWD/bdd/screenshots
+sudo docker run -d -p 9000:9000 --name bdd \
+  -v $STORIES_PATH:/opt/bdd/data/stories \
+  -v $COMPOSITES_PATH:/opt/bdd/composites \
+  -v $SCREENSHOTS_PATH:/opt/bdd/build/reports/tests \
+  vfarcic/bdd
 ```
 
 Running
@@ -108,4 +117,16 @@ Running
 go test -cover
 
 sudo wct component_tests/index.html
+
+sudo docker run -d --name oauth \
+	-p 8081:8080 \
+	-v /etc/ssl/certs:/etc/ssl/certs \
+	-v /data/oauth:/data/db \
+	-e PORT=8081 \
+	-e SEC_KEY="Bla" \
+	-e REDIRECT_URL="http://localhost:8080/components/test.html" \
+	-e GOOGLE_CLIENT_ID="472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com" \
+	-e GOOGLE_SECRET="OnkptU4BTdE45mi-b3hACdAY" \
+	-e GOOGLE_REDIRECT_URL="http://localhost:8081/auth/google/callback"
+	vfarcic/oauth
 ```

@@ -4,6 +4,7 @@ package main
 // TODO: Hash (MD5) cookie values
 // TODO: Add base tag to components
 // TODO: Add gulp with tests
+// TODO: Create Dockerfile for all tests
 
 // TODO: Test
 

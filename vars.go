@@ -15,11 +15,11 @@ type Vars struct {
 	secKey string
 	redirectUrl string
 	googleProvider provider
-	facebookProvider provider
 	// TODO: Add the rest of providers
-	//	githubProvider provider
-	//	herokuProvider provider
-	//	soundcloudProvider provider
+	//facebookProvider provider
+	//githubProvider provider
+	//herokuProvider provider
+	//soundcloudProvider provider
 }
 
 type provider struct {

@@ -54,7 +54,6 @@ func getUsersCollection(session *mgo.Session) *mgo.Collection {
 }
 
 func getSession() *mgo.Session {
-	// TODO: Change to param
 	session, err := mgo.Dial("localhost")
 	if err != nil {
 		panic(err)
