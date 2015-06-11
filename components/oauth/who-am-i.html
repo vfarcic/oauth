@@ -16,21 +16,20 @@
     </style>
     <!--TODO: Test-->
     <template>
-        <!--TODO: Test that on-response has handlerResponse assigned-->
         <iron-ajax
                 id="ajax"
                 handle-as="json"
                 on-response="handleResponse">
         </iron-ajax>
         <div align="center">
-            <iron-image sizing="cover" id="avatar" class="avatar" hidden$="{{!displayAvatar}}"></iron-image>
+            <iron-image sizing="cover" id="avatar" class="avatar" hidden$="{{hideAvatar}}"></iron-image>
         </div>
         <div class="details">
             <paper-item three-line>
                 <paper-item-body>
-                    <h3 id="fullName" hidden$="{{!displayFullName}}"></h3>
-                    <div id="email" hidden$="{{!displayEmail}}" secondary></div>
-                    <paper-button id="logOut" hidden$="{{!displayLogOut}}">
+                    <h3 id="fullName" hidden$="{{hideFullName}}"></h3>
+                    <div id="email" hidden$="{{hideEmail}}" secondary></div>
+                    <paper-button id="logOut" hidden$="{{hideLogOut}}">
                         <a id="logOutLink">Log Out</a>
                     </paper-button>
                 </paper-item-body>
@@ -43,21 +42,25 @@
     Polymer({
         is: "who-am-i",
         properties: {
-            displayAvatar: {
+            hideAvatar: {
                 type: Boolean,
-                value: true
+                value: false
             },
-            displayFullName: {
+            hideFullName: {
                 type: Boolean,
-                value: true
+                value: false
             },
-            displayEmail: {
+            hideEmail: {
                 type: Boolean,
-                value: true
+                value: false
             },
-            displayLogOut: {
+            xxx: {
                 type: Boolean,
-                value: true
+                value: false
+            },
+            hideLogOut: {
+                type: Boolean,
+                value: false
             },
             backendHost: {
                 type: String,

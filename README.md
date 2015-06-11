@@ -88,11 +88,16 @@ Embed "Who Am I" Web Component
 <html>
 <head>
 	<!--Import Required Polymer Components-->
-    <link rel="import" href="polymer/polymer.html">
-    <link rel="import" href="iron-ajax/iron-ajax.html">
-    <link rel="import" href="iron-image/iron-image.html">
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/paper-styles/classes/global.html">
+    <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="../bower_components/iron-image/iron-image.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item.html">
+    <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
     <!--Import "Who Am I" Component-->
-	<link rel="import" href="http://localhost:8080/components/oauth/whoami.html">
+	<link rel="import" href="http://localhost:8080/components/oauth/who-am-i.html">
 </head>
 <body>
 	<!--Display "Who Am I" Component-->
@@ -103,8 +108,10 @@ Embed "Who Am I" Web Component
 Following properties can be used:
 
 * backendHost
-* displayAvatar
-* displayFullName
+* hide-avatar
+* hide-full-name
+* hide-email
+* hide-log-out
 
 Backup
 ======
