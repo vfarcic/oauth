@@ -30,6 +30,6 @@ When Web user sets value john.doe@farcic.com to the element Email
 When Web user sets value johndoe2 to the element Passwd
 When Web user clicks the element signIn
 When Web user clicks the element submit_approve_access
-Then Web page title should have text vfarcic/oauth
+Then Web element fullName is present
 
 Examples:

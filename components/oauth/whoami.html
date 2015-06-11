@@ -1,29 +1,71 @@
 <dom-module id="who-am-i">
-    <style></style>
+    <!--TODO: Test-->
+    <style is="custom-style">
+        .avatar {
+            display: inline-block;
+            width: var(--who-am-i-avatar-width, 150px);
+            height: var(--who-am-i-avatar-height, 150px);
+            border-radius: 50%;
+            overflow: hidden;
+            background: #ccc;
+        }
+
+        .details paper-item-body {
+            text-align: center;
+        }
+    </style>
+    <!--TODO: Test-->
     <template>
-        <iron-image style="width:75px; height:75px;" sizing="cover" id="avatarURL"></iron-image>
-        <div>
-            <span id="fullName"></span>
-            <paper-button id="logOut">
-                <a id="logOutLink">Log Out</a>
-            </paper-button>
-        </div>
-        <content></content>
         <!--TODO: Test that on-response has handlerResponse assigned-->
         <iron-ajax
                 id="ajax"
                 handle-as="json"
                 on-response="handleResponse">
         </iron-ajax>
+        <div align="center">
+            <iron-image sizing="cover" id="avatar" class="avatar" hidden$="{{!displayAvatar}}"></iron-image>
+        </div>
+        <div class="details">
+            <paper-item three-line>
+                <paper-item-body>
+                    <h3 id="fullName" hidden$="{{!displayFullName}}"></h3>
+                    <div id="email" hidden$="{{!displayEmail}}" secondary></div>
+                    <paper-button id="logOut" hidden$="{{!displayLogOut}}">
+                        <a id="logOutLink">Log Out</a>
+                    </paper-button>
+                </paper-item-body>
+            </paper-item>
+        </div>
+        <content></content>
     </template>
 </dom-module>
 <script>
     Polymer({
         is: "who-am-i",
         properties: {
+            displayAvatar: {
+                type: Boolean,
+                value: true
+            },
+            displayFullName: {
+                type: Boolean,
+                value: true
+            },
+            displayEmail: {
+                type: Boolean,
+                value: true
+            },
+            displayLogOut: {
+                type: Boolean,
+                value: true
+            },
             backendHost: {
                 type: String,
                 value: "http://localhost:8080"
+            },
+            avatarWidth: {
+                type: Number,
+                value: 75
             }
         },
         ready: function() {
@@ -38,7 +80,8 @@
         handleResponse: function(request) {
             var json = request.detail.response;
             this.$.fullName.textContent = json.name;
-            this.$.avatarURL.setAttribute("src", json.avatar_url);
+            this.$.email.textContent = json.email;
+            this.$.avatar.setAttribute("src", json.avatar_url);
         }
     });
 </script>

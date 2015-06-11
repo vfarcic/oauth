@@ -42,6 +42,8 @@ func main() {
 	r.HandleFunc("/auth/logout", logoutHandler(vars.redirectUrl))
 	r.PathPrefix("/components/").Handler(
 		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
+	r.PathPrefix("/bower_components/").Handler(
+		http.StripPrefix("/bower_components/", http.FileServer(http.Dir("bower_components"))))
 	r.PathPrefix("/component_tests/").Handler(
 		http.StripPrefix("/component_tests/", http.FileServer(http.Dir("component_tests"))))
 	log.Println("Starting the server on", addr)

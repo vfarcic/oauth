@@ -30,7 +30,10 @@ Run
 
 Google authentication data can be created in [Google Developers Console](https://console.developers.google.com).
 
-Following environment variables can be used:
+Run With Docker
+---------------
+
+Following environment variables can be used. 
 
 * DOMAIN: Domain in which the application is running. Defaults to **localhost**.
 * PORT: Port in which the application is running. Defaults to **8080**.
@@ -39,9 +42,6 @@ Following environment variables can be used:
 * GOOGLE_CLIENT_ID: Google client ID. This is mandatory variable if google authentication is used.
 * GOOGLE_SECRET: Google client secret. This is mandatory variable if google authentication is used.
 * GOOGLE_REDIRECT_URL: Google redirect URI. This is mandatory variable if google authentication is used.
-
-Run
----
 
 ```bash
 sudo docker run -d --name oauth \
@@ -58,6 +58,28 @@ sudo docker run -d --name oauth \
 ```
 
 After run, wait until MongoDB is initialized.
+
+Run Executable
+--------------
+
+Run `./oauth -help` to get the list of arguments.
+
+```bash
+sudo docker run --name mongo -d \
+	-p 27017:27017 \
+	mongo
+
+./oauth \
+	-sec-key="Bla" \
+	-redirect-url="http://localhost:8080/components/test.html" \
+	-google-client-id="472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com" \
+	-google-secret="OnkptU4BTdE45mi-b3hACdAY" \
+	-google-redirect-url="http://localhost:8080/auth/google/callback"
+```
+
+Wait until MongoDB is initialized.
+
+Open [http://localhost:8080/auth/google/login](http://localhost:8080/auth/google/login).
 
 Embed "Who Am I" Web Component
 ==============================
@@ -77,6 +99,12 @@ Embed "Who Am I" Web Component
 	<who-am-i></who-am-i>
 </body>
 ```
+
+Following properties can be used:
+
+* backendHost
+* displayAvatar
+* displayFullName
 
 Backup
 ======
@@ -99,15 +127,6 @@ Prequisites
 
 ```bash
 sudo npm install -g web-component-tester
-
-STORIES_PATH=$PWD/bdd/stories
-COMPOSITES_PATH=$PWD/bdd/composites
-SCREENSHOTS_PATH=$PWD/bdd/screenshots
-sudo docker run -d -p 9000:9000 --name bdd \
-  -v $STORIES_PATH:/opt/bdd/data/stories \
-  -v $COMPOSITES_PATH:/opt/bdd/composites \
-  -v $SCREENSHOTS_PATH:/opt/bdd/build/reports/tests \
-  vfarcic/bdd
 ```
 
 Running
@@ -117,16 +136,4 @@ Running
 go test -cover
 
 sudo wct component_tests/index.html
-
-sudo docker run -d --name oauth \
-	-p 8081:8080 \
-	-v /etc/ssl/certs:/etc/ssl/certs \
-	-v /data/oauth:/data/db \
-	-e PORT=8081 \
-	-e SEC_KEY="Bla" \
-	-e REDIRECT_URL="http://localhost:8080/components/test.html" \
-	-e GOOGLE_CLIENT_ID="472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com" \
-	-e GOOGLE_SECRET="OnkptU4BTdE45mi-b3hACdAY" \
-	-e GOOGLE_REDIRECT_URL="http://localhost:8081/auth/google/callback"
-	vfarcic/oauth
 ```
