@@ -8,6 +8,7 @@ RUN mkdir -p /data/db /etc/ssl/certs /app
 COPY run.sh /app/oauth.sh
 RUN chmod +x /app/oauth.sh
 COPY components /app/components
+COPY bower_components /app/bower_components
 COPY oauth /app/oauth
 RUN chmod +x /app/oauth
 

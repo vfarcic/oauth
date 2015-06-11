@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="../bower_components/iron-image/iron-image.html">
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
-    <link rel="import" href="../components/oauth/whoami.html">
+    <link rel="import" href="../components/oauth/who-am-i.html">
 
   </head>
   <body>
@@ -71,7 +71,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         });
 
-        suite('ready', function() {
+        suite('ready function', function() {
 
           test('sets logOutLink href', function () {
             var url = myEl.$.logOutLink.getAttribute("href");
@@ -79,13 +79,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           test('sets ajax URL', function () {
+            document.cookie = "authID=1234567890;";
             var url = myEl.$.ajax.url;
             assert.equal(url, ajaxUrl);
           });
 
         });
 
-        suite('handler response', function() {
+        suite('handleResponse function', function() {
 
           test('sets fullName', function() {
             myEl.handleResponse(testRequest);
@@ -95,6 +96,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           test('sets avatar src attribute', function() {
             myEl.handleResponse(testRequest);
             assert.equal(myEl.$.avatar.getAttribute('src'), testAvatarURL);
+          });
+
+        });
+
+        suite('getCookie function', function() {
+
+          test('retrieves cookie value', function() {
+            document.cookie = "my_cookie=my_value;";
+            document.cookie = "test_cookie=test_value;";
+            document.cookie = "my_other_cookie=my_other_value;";
+            var actual = myEl.getCookie("test_cookie");
+            assert.equal(actual, "test_value");
           });
 
         });

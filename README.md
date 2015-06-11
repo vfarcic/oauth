@@ -50,7 +50,7 @@ sudo docker run -d --name oauth \
 	-v /data/oauth:/data/db \
 	-e PORT=8080 \
 	-e SEC_KEY="Bla" \
-	-e REDIRECT_URL="http://localhost:8080/components/test.html" \
+	-e REDIRECT_URL="http://localhost:8080/components/oauth/demo/index.html" \
 	-e GOOGLE_CLIENT_ID="472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com" \
 	-e GOOGLE_SECRET="OnkptU4BTdE45mi-b3hACdAY" \
 	-e GOOGLE_REDIRECT_URL="http://localhost:8080/auth/google/callback" \
@@ -71,7 +71,7 @@ sudo docker run --name mongo -d \
 
 ./oauth \
 	-sec-key="Bla" \
-	-redirect-url="http://localhost:8080/components/test.html" \
+	-redirect-url="http://localhost:8080/components/oauth/demo/index.html" \
 	-google-client-id="472858977716-ej3ca5dtmq4krl7m085rpfno3cjp2ogp.apps.googleusercontent.com" \
 	-google-secret="OnkptU4BTdE45mi-b3hACdAY" \
 	-google-redirect-url="http://localhost:8080/auth/google/callback"
