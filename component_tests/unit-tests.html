@@ -32,7 +32,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
       var myEl = document.querySelector('who-am-i');
-      var ajaxUrl = 'http://localhost:8080/auth/api/v1/user/1234567890';
+      var authID = "1234567890";
+      var ajaxUrl = 'http://localhost:8080/auth/api/v1/user/' + authID;
       var testName = 'John Doe';
       var testAvatarURL = 'http://example.com/avatar';
       var testRequest = {
@@ -50,23 +51,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         suite('properties', function() {
 
           test('defines the "backendHost" property', function() {
+            assert.isDefined(myEl.backendHost);
+            assert.isString(myEl.backendHost);
             assert.equal(myEl.backendHost, 'http://localhost:8080');
           });
 
           test('defines the "hideAvatar" property', function() {
+            assert.isDefined(myEl.hideAvatar);
+            assert.isBoolean(myEl.hideAvatar);
             assert.equal(myEl.hideAvatar, false);
           });
 
           test('defines the "hideFullName" property', function() {
+            assert.isDefined(myEl.hideFullName);
+            assert.isBoolean(myEl.hideFullName);
             assert.equal(myEl.hideFullName, false);
           });
 
           test('defines the "hideEmail" property', function() {
+            assert.isDefined(myEl.hideEmail);
+            assert.isBoolean(myEl.hideEmail);
             assert.equal(myEl.hideEmail, false);
           });
 
           test('defines the "hideLogOut" property', function() {
+            assert.isDefined(myEl.hideLogOut);
+            assert.isBoolean(myEl.hideLogOut);
             assert.equal(myEl.hideLogOut, false);
+          });
+
+          test('defines the "authID" property', function() {
+            assert.isDefined(myEl.authID);
+            assert.isString(myEl.authID);
           });
 
         });
@@ -79,9 +95,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
 
           test('sets ajax URL', function () {
-            document.cookie = "authID=1234567890;";
+            document.cookie = 'authID=' + authID + ';';
             var url = myEl.$.ajax.url;
             assert.equal(url, ajaxUrl);
+          });
+
+          test('sets authID property', function() {
+            assert.equal(myEl.authID, authID);
           });
 
         });

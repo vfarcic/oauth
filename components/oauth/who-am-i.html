@@ -54,10 +54,6 @@
                 type: Boolean,
                 value: false
             },
-            xxx: {
-                type: Boolean,
-                value: false
-            },
             hideLogOut: {
                 type: Boolean,
                 value: false
@@ -69,14 +65,18 @@
             avatarWidth: {
                 type: Number,
                 value: 75
+            },
+            authID: {
+                type: String,
+                value: ""
             }
         },
         ready: function() {
-            var authID = this.getLocationArgument("authID");
-            if (authID === "") {
-                authID = this.getCookie("authID");
+            this.authID = this.getLocationArgument("authID");
+            if (this.authID === "") {
+                this.authID = this.getCookie("authID");
             }
-            var url = this.backendHost + '/auth/api/v1/user/' + authID;
+            var url = this.backendHost + '/auth/api/v1/user/' + this.authID;
             this.$.logOutLink.setAttribute("href", this.backendHost + "/auth/logout");
             this.$.ajax.url = url;
             this.$.ajax.generateRequest();
