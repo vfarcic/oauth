@@ -1,0 +1,26 @@
+<dom-module id="oauth-providers">
+    <!--TODO: Test-->
+    <style is="custom-style">
+    </style>
+    <!--TODO: Test-->
+    <template>
+        <a id="google">Google</a>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: "oauth-providers",
+        properties: {
+            backendHost: {
+                type: String,
+                value: "http://localhost:8080"
+            }
+        },
+        ready: function() {
+            this.setGoogle();
+        },
+        setGoogle: function() {
+            this.$.google.setAttribute("href", this.backendHost + "/auth/google/login");
+        }
+    });
+</script>

@@ -1,13 +1,4 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <html>
   <head>
     <meta charset="utf-8">
@@ -22,16 +13,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="../bower_components/iron-image/iron-image.html">
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
-    <link rel="import" href="../components/oauth/who-am-i.html">
+    <link rel="import" href="../components/oauth/oauth-who-am-i.html">
 
   </head>
   <body>
 
     <!-- You can use the document as a place to set up your fixtures. -->
-    <who-am-i></who-am-i>
+    <oauth-who-am-i></oauth-who-am-i>
 
     <script>
-      var myEl = document.querySelector('who-am-i');
+      var myEl = document.querySelector('oauth-who-am-i');
       var authID = "1234567890";
       var ajaxUrl = 'http://localhost:8080/auth/api/v1/user/' + authID;
       var testName = 'John Doe';
@@ -46,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       };
 
 
-      suite('<who-am-i>', function() {
+      suite('oauth-who-am-i', function() {
 
         suite('properties', function() {
 
@@ -89,9 +80,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         suite('ready function', function() {
 
-          test('sets logOutLink href', function () {
-            var url = myEl.$.logOutLink.getAttribute("href");
-            assert.equal(url, 'http://localhost:8080/auth/logout');
+          test('invokes setLogOutLink function', function () {
+            var actual = myEl.$.logOutLink.getAttribute("href");
+            myEl.setLogOutLink();
+            var expected = myEl.$.logOutLink.getAttribute("href");
+            assert.equal(actual, expected);
           });
 
           test('sets ajax URL', function () {
@@ -128,6 +121,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             document.cookie = "my_other_cookie=my_other_value;";
             var actual = myEl.getCookie("test_cookie");
             assert.equal(actual, "test_value");
+          });
+
+        });
+
+        suite('setLogOutLink function', function() {
+
+          test('uses backendHost to set logOutLink href', function () {
+            myEl.backendHost = "http://somewhere-else.com";
+            myEl.setLogOutLink();
+            var url = myEl.$.logOutLink.getAttribute("href");
+            assert.equal(url, myEl.backendHost + '/auth/logout');
           });
 
         });

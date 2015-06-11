@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../components/oauth/oauth-providers.html">
+
+  </head>
+  <body>
+
+    <!-- You can use the document as a place to set up your fixtures. -->
+    <oauth-providers></oauth-providers>
+
+    <script>
+      var myEl = document.querySelector('oauth-providers');
+
+      suite('oauth-providers', function() {
+
+        suite('properties', function() {
+
+          test('defines the "backendHost" property', function() {
+            assert.isDefined(myEl.backendHost);
+            assert.isString(myEl.backendHost);
+            assert.equal(myEl.backendHost, 'http://localhost:8080');
+          });
+
+        });
+
+        suite('ready function', function() {
+
+          test('invokes setGoogle function', function () {
+            var actual = myEl.$.google.getAttribute("href");
+            myEl.setGoogle();
+            var expected = myEl.$.google.getAttribute("href");
+            assert.equal(actual, expected);
+          });
+
+        });
+
+        suite('setLogOutLink function', function() {
+
+          test('uses backendHost to set logOutLink href', function () {
+            myEl.backendHost = "http://somewhere-else.com";
+            myEl.setGoogle();
+            var url = myEl.$.google.getAttribute("href");
+            assert.equal(url, myEl.backendHost + '/auth/google/login');
+          });
+
+        });
+
+      });
+    </script>
+
+  </body>
+</html>

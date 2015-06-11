@@ -9,7 +9,8 @@
     <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
     <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
     <link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
-    <link rel="import" href="../who-am-i.html">
+    <link rel="import" href="../oauth-who-am-i.html">
+    <link rel="import" href="../oauth-providers.html">
     <style is="custom-style">
         :root {
             --who-am-i-avatar-width: 100px;
@@ -18,9 +19,20 @@
     </style>
 </head>
 <body>
-    <h2 align="center">Complete</h2>
-    <who-am-i></who-am-i>
-    <h2 align="center">With Elements Hidden</h2>
-    <who-am-i hide-email hide-log-out></who-am-i>
+    <div id="providersHolder" align="center">
+        <h2 align="center">Providers</h2>
+        <oauth-providers></oauth-providers>
+    </div>
+    <div id="whoAmIHolder">
+        <h2 align="center">Who Am I: Complete</h2>
+        <oauth-who-am-i id="whoAmI"></oauth-who-am-i>
+        <h2 align="center">Who Am I: With Elements Hidden</h2>
+        <oauth-who-am-i id="whoAmIShort" hide-email hide-log-out></oauth-who-am-i>
+    </div>
+    <script>
+        if (document.querySelector('#whoAmI').authID == "") {
+            document.querySelector('#whoAmIHolder').hidden = true;
+        }
+    </script>
 </body>
 </html>

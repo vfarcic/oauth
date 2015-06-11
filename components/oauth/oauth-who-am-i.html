@@ -1,4 +1,4 @@
-<dom-module id="who-am-i">
+<dom-module id="oauth-who-am-i">
     <!--TODO: Test-->
     <style is="custom-style">
         .avatar {
@@ -40,7 +40,7 @@
 </dom-module>
 <script>
     Polymer({
-        is: "who-am-i",
+        is: "oauth-who-am-i",
         properties: {
             hideAvatar: {
                 type: Boolean,
@@ -77,9 +77,12 @@
                 this.authID = this.getCookie("authID");
             }
             var url = this.backendHost + '/auth/api/v1/user/' + this.authID;
-            this.$.logOutLink.setAttribute("href", this.backendHost + "/auth/logout");
             this.$.ajax.url = url;
             this.$.ajax.generateRequest();
+            this.setLogOutLink();
+        },
+        setLogOutLink: function() {
+            this.$.logOutLink.setAttribute("href", this.backendHost + "/auth/logout");
         },
         handleResponse: function(request) {
             var json = request.detail.response;
