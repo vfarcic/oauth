@@ -139,7 +139,7 @@ Prequisites
 -----------
 
 ```bash
-sudo npm install -g web-component-tester
+sudo npm install
 ```
 
 Running
@@ -148,5 +148,5 @@ Running
 ```bash
 go test -cover
 
-sudo wct component_tests/index.html
+gulp test:local
 ```
