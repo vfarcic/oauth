@@ -96,22 +96,28 @@ Embed "Who Am I" Web Component
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
     <link rel="import" href="../bower_components/paper-item/paper-item.html">
     <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
-    <!--Import "Who Am I" Component-->
-	<link rel="import" href="http://localhost:8080/components/oauth/who-am-i.html">
+    <!--Import OAuth Components-->
+	<link rel="import" href="http://localhost:8080/components/oauth/oauth-who-am-i.html">
+	<link rel="import" href="http://localhost:8080/components/oauth/oauth-providers.html">
 </head>
 <body>
-	<!--Display "Who Am I" Component-->
-	<who-am-i></who-am-i>
+	<oauth-providers></oauth-providers>
+	<oauth-who-am-i></oauth-who-am-i>
 </body>
 ```
 
-Following properties can be used:
+Following properties can be used with **oauth-who-am-i**:
 
 * backendHost
 * hide-avatar
 * hide-full-name
 * hide-email
 * hide-log-out
+* auth-id
+
+Following properties can be used with **oauth-providers**:
+
+* backendHost
 
 Backup
 ======

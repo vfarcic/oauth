@@ -7,37 +7,35 @@
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
 
-    <!-- Step 1: import the element to test -->
     <link rel="import" href="../bower_components/paper-styles/classes/global.html">
     <link rel="import" href="../bower_components/polymer/polymer.html">
     <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="../bower_components/iron-image/iron-image.html">
     <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
     <link rel="import" href="../components/oauth/oauth-who-am-i.html">
 
   </head>
   <body>
 
-    <!-- You can use the document as a place to set up your fixtures. -->
     <oauth-who-am-i></oauth-who-am-i>
 
     <script>
-      var myEl = document.querySelector('oauth-who-am-i');
-      var authID = "1234567890";
-      var ajaxUrl = 'http://localhost:8080/auth/api/v1/user/' + authID;
-      var testName = 'John Doe';
-      var testAvatarURL = 'http://example.com/avatar';
-      var testRequest = {
-        detail: {
-          response: {
-            name: testName,
-            avatar_url: testAvatarURL
-          }
-        }
-      };
-
 
       suite('oauth-who-am-i', function() {
+
+        var myEl, avatar, fullName, email;
+        var authID = '1234567890';
+        var ajaxUrl = 'http://localhost:8080/auth/api/v1/user/' + authID;
+        var testName = 'John Doe';
+        var testAvatarURL = 'http://example.com/avatar';
+
+        setup(function() {
+          myEl = document.querySelector('oauth-who-am-i');
+          avatar = myEl.querySelector("#avatar");
+          fullName = myEl.querySelector("#fullName");
+          email = myEl.querySelector("#email");
+        });
 
         suite('properties', function() {
 
@@ -101,6 +99,15 @@
 
         suite('handleResponse function', function() {
 
+          var testRequest = {
+            detail: {
+              response: {
+                name: testName,
+                avatar_url: testAvatarURL
+              }
+            }
+          };
+
           test('sets fullName', function() {
             myEl.handleResponse(testRequest);
             assert.equal(myEl.$.fullName.textContent, testName);
@@ -132,6 +139,49 @@
             myEl.setLogOutLink();
             var url = myEl.$.logOutLink.getAttribute("href");
             assert.equal(url, myEl.backendHost + '/auth/logout');
+          });
+
+        });
+
+        suite('UI', function() {
+
+          suite('avatar', function() {
+
+            test('is displayed', function() {
+              assert.equal(avatar.hidden, false);
+            });
+
+            test('can be hidden', function() {
+              myEl.hideAvatar = true;
+              assert.equal(avatar.hidden, true);
+            });
+
+          });
+
+          suite('fullName', function() {
+
+            test('is displayed', function() {
+              assert.equal(fullName.hidden, false);
+            });
+
+            test('can be hidden', function() {
+              myEl.hideFullName = true;
+              assert.equal(fullName.hidden, true);
+            });
+
+          });
+
+          suite('email', function() {
+
+            test('is displayed', function() {
+              assert.equal(email.hidden, false);
+            });
+
+            test('can be hidden', function() {
+              myEl.hideEmail = true;
+              assert.equal(email.hidden, true);
+            });
+
           });
 
         });

@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
+
+    <link rel="import" href="../bower_components/paper-styles/classes/global.html">
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="../bower_components/iron-image/iron-image.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
+    <link rel="import" href="../bower_components/test-fixture/test-fixture.html">
+
+    <link rel="import" href="../components/oauth/oauth-who-am-i.html">
+
+  </head>
+  <body>
+
+    <test-fixture id="whoAmI">
+      <template>
+        <oauth-who-am-i></oauth-who-am-i>
+      </template>
+    </test-fixture>
+
+
+    <script>
+      var myEl = document.querySelector('oauth-who-am-i');
+      var authID = "1234567890";
+      var ajaxUrl = 'http://localhost:8080/auth/api/v1/user/' + authID;
+      var testName = 'John Doe';
+      var testAvatarURL = 'http://example.com/avatar';
+      var testRequest = {
+        detail: {
+          response: {
+            name: testName,
+            avatar_url: testAvatarURL
+          }
+        }
+      };
+
+
+      suite('UI', function() {
+
+        suite('who-am-i', function() {
+
+          var whoAmI, avatar, fullName;
+          setup(function() {
+            whoAmI = fixture('whoAmI');
+            avatar = whoAmI.querySelector("#avatar");
+            fullName = whoAmI.querySelector("#fullName");
+          });
+
+          suite('avatar', function() {
+
+            test('is displayed', function() {
+              assert.equal(avatar.hidden, false);
+            });
+
+            test('can be hidden', function() {
+              whoAmI.hideAvatar = true;
+              assert.equal(avatar.hidden, true);
+            });
+
+          });
+
+          suite('fullName', function() {
+
+            test('is displayed', function() {
+              assert.equal(fullName.hidden, false);
+            });
+
+            test('can be hidden', function() {
+              whoAmI.hideFullName = true;
+              assert.equal(fullName.hidden, true);
+            });
+
+          });
+
+        });
+
+      });
+    </script>
+
+  </body>
+</html>

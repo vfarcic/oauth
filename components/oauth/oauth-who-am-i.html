@@ -22,7 +22,7 @@
                 on-response="handleResponse">
         </iron-ajax>
         <div align="center">
-            <iron-image sizing="cover" id="avatar" class="avatar" hidden$="{{hideAvatar}}"></iron-image>
+            <iron-image id="avatar" sizing="cover" id="avatar" class="avatar" hidden$="{{hideAvatar}}"></iron-image>
         </div>
         <div class="details">
             <paper-item three-line>
@@ -61,10 +61,6 @@
             backendHost: {
                 type: String,
                 value: "http://localhost:8080"
-            },
-            avatarWidth: {
-                type: Number,
-                value: 75
             },
             authID: {
                 type: String,
