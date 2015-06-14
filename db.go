@@ -41,7 +41,7 @@ func (db MongoDB) GetByAuthID(authID string) (MongoUser, error) {
 	return users, err
 }
 
-func DropFromDB() error {
+func (db MongoDB) Drop() error {
 	session := getSession()
 	defer session.Close()
 	c := getUsersCollection(session)

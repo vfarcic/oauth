@@ -9,8 +9,10 @@ import (
 var db = MongoDB{}
 var testUser = GetMongoUser(GetTestUser())
 
-func TestSaveToMongoDBShouldInsertData(t *testing.T) {
-	DropFromDB()
+// Save
+
+func TestSaveShouldInsertData(t *testing.T) {
+	db.Drop()
 	db.Save(testUser)
 
 	session := getSession()
@@ -23,8 +25,8 @@ func TestSaveToMongoDBShouldInsertData(t *testing.T) {
 	assert.Equal(t, testUser, actual)
 }
 
-func TestSaveToMongoDBShouldUpdateWhenEmailExists(t *testing.T) {
-	DropFromDB()
+func TestSaveShouldUpdateWhenEmailExists(t *testing.T) {
+	db.Drop()
 	db.Save(testUser)
 	db.Save(testUser)
 
@@ -38,8 +40,8 @@ func TestSaveToMongoDBShouldUpdateWhenEmailExists(t *testing.T) {
 	assert.Len(t, actual, 1)
 }
 
-func TestGetFromDBShouldReturnData(t *testing.T) {
-	DropFromDB()
+func TestGetShouldReturnData(t *testing.T) {
+	db.Drop()
 	db.Save(testUser)
 
 	actual, err := db.Get(testUser.Email)
@@ -48,14 +50,18 @@ func TestGetFromDBShouldReturnData(t *testing.T) {
 	assert.Equal(t, testUser, actual)
 }
 
-func TestGetFromDBShouldReturnErrorWhenNonExistent(t *testing.T) {
+// Get
+
+func TestGetShouldReturnErrorWhenNonExistent(t *testing.T) {
 	_, err := db.Get("john.doe@gmail.com")
 
 	assert.NotNil(t, err)
 }
 
-func TestGetFromDBByAuthIDShouldReturnData(t *testing.T) {
-	DropFromDB()
+// GetByAuthID
+
+func TestGetByAuthIDShouldReturnData(t *testing.T) {
+	db.Drop()
 	db.Save(testUser)
 
 	actual, err := db.GetByAuthID(testUser.AuthID)
@@ -64,17 +70,19 @@ func TestGetFromDBByAuthIDShouldReturnData(t *testing.T) {
 	assert.Equal(t, testUser, actual)
 }
 
-func TestGetFromDBByAuthIDShouldReturnErrorWhenNonExistent(t *testing.T) {
+func TestGetByAuthIDShouldReturnErrorWhenNonExistent(t *testing.T) {
 	_, err := db.GetByAuthID("111111111111111")
 
 	assert.NotNil(t, err)
 }
 
-func TestDropFromDBShouldRemoveCollection(t *testing.T) {
-	DropFromDB()
+// Drop
+
+func TestDropShouldRemoveCollection(t *testing.T) {
+	db.Drop()
 	db.Save(testUser)
 
-	err := DropFromDB()
+	err := db.Drop()
 
 	session := getSession()
 	defer session.Close()
