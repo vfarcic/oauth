@@ -3,3 +3,4 @@
 /oauth
 /bower_components
 /npm-debug.log
+/coverage.out

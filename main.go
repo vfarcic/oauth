@@ -12,47 +12,17 @@ import (
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 	"github.com/stretchr/gomniauth/common"
-	"fmt"
-	"net/http"
-	"log"
-	phttp "github.com/pikanezi/http"
 )
 
+var clVars = CLVars{}
+
 func main() {
-	vars := GetVars(flagUtil)
+	vars := clVars.GetCLVariables(flagUtil)
 	providerNames := getProviders(vars)
-	addr := vars.addr
-	r := phttp.NewRouter()
-	r.SetCustomHeader(phttp.Header{
-		"Access-Control-Allow-Origin": "*",
-	})
-	for _, providerName := range providerNames {
-		provider, err := gomniauth.Provider(providerName)
-		if err != nil {
-			panic(err)
-		}
-		// TODO: Change URI to param
-		r.HandleFunc(fmt.Sprintf("/auth/%s/login", providerName), loginHandler(provider))
-		// TODO: Change URI to param
-		r.HandleFunc(
-			fmt.Sprintf("/auth/%s/callback", providerName),
-			callbackHandler(provider, vars.redirectUrl, MongoDB{}))
-	}
-	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(MongoDB{}))
-	r.HandleFunc("/auth/logout", logoutHandler(vars.redirectUrl))
-	r.PathPrefix("/components/").Handler(
-		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
-	r.PathPrefix("/bower_components/").Handler(
-		http.StripPrefix("/bower_components/", http.FileServer(http.Dir("bower_components"))))
-	r.PathPrefix("/component_tests/").Handler(
-		http.StripPrefix("/component_tests/", http.FileServer(http.Dir("component_tests"))))
-	log.Println("Starting the server on", addr)
-	if err := http.ListenAndServe(addr, r); err != nil {
-		log.Fatalln("Could not initiate the server", addr, " - ", err)
-	}
+	StartServer(providerNames, vars.redirectUrl, vars.addr)
 }
 
-func getGoogleProvider(vars Vars) common.Provider {
+func getGoogleProvider(vars CLVars) common.Provider {
 	return google.New(
 		vars.googleProvider.clientId,
 		vars.googleProvider.clientSecret,
@@ -61,7 +31,7 @@ func getGoogleProvider(vars Vars) common.Provider {
 }
 
 // TODO: Add the rest of providers
-func getProviders(vars Vars) []string {
+func getProviders(vars CLVars) []string {
 	gomniauth.SetSecurityKey(vars.secKey)
 	// TODO: Add the rest of providers
 	// TODO: Manually test all providers

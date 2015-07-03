@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 )
 
+var vars = CLVars{}
+
 func TestGetFlagArgsShouldReturnTheSameName(t *testing.T) {
 	beforeTest()
 	expected := "name"
@@ -90,49 +92,49 @@ func TestGetProviderShouldContainAllData(t *testing.T) {
 
 func TestGetVarsShouldInvokeFlagUtilForDomain(t *testing.T) {
 	expected := *mockedFlagUtil("domain", "", "", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.domain)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForAddr(t *testing.T) {
 	expected := *mockedFlagUtil("addr", "", ":8080", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.addr)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForPort(t *testing.T) {
 	expected := *mockedFlagUtil("port", "", "8080", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.port)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForSecKey(t *testing.T) {
 	expected := *mockedFlagUtil("sec-key", "", "", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.secKey)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForGoogleClientId(t *testing.T) {
 	expected := *mockedFlagUtil("google-client-id", "", "", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.googleProvider.clientId)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForGoogleSecret(t *testing.T) {
 	expected := *mockedFlagUtil("google-secret", "", "", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.googleProvider.clientSecret)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForGoogleRedirectUrl(t *testing.T) {
 	expected := *mockedFlagUtil("google-redirect-url", "", "", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.googleProvider.redirectUrl)
 }
 
 func TestGetVarsShouldInvokeFlagUtilForRedirectUrl(t *testing.T) {
 	expected := *mockedFlagUtil("redirect-url", "", "", false)
-	vars := GetVars(mockedFlagUtil)
+	vars := vars.GetCLVariables(mockedFlagUtil)
 	assert.Equal(t, expected, vars.redirectUrl)
 }
 
@@ -152,15 +154,4 @@ func mockedFlagUtil(name string, fullName string, defaultValue string, mandatory
 func mockedFlagUtilWithEmptyReturn(name string, fullName string, defaultValue string, mandatory bool) *string {
 	value := ""
 	return &value
-}
-
-var TestVars = Vars {
-	domain: "MY_DOMAIN",
-	port: "1234",
-	secKey: "MY_SECURITY_KEY",
-	googleProvider: provider {
-		clientId: "MY_GOOGLE_CLIENT_ID",
-		clientSecret: "MY_GOOGLE_CLIENT_SECRET",
-		redirectUrl: "MY_REDIRECT_URL_AFTER_GOOGLE",
-	},
 }

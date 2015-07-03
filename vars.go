@@ -8,7 +8,11 @@ import (
 	"log"
 )
 
-type Vars struct {
+type Vars interface {
+	GetCLVariables(flagUtilFunc flagUtilGetter) CLVars
+}
+
+type CLVars struct {
 	addr string
 	domain string
 	port string
@@ -28,7 +32,7 @@ type provider struct {
 	redirectUrl string
 }
 
-func GetVars(flagUtilFunc flagUtilGetter) Vars {
+func (clv CLVars) GetCLVariables(flagUtilFunc flagUtilGetter) CLVars {
 	addr := flagUtilFunc("addr", "Application address", ":8080", false)
 	domain := flagUtilFunc("domain", "Application domain (user in Web Components)", "", false)
 	port := flagUtilFunc("port", "Application port (user in Web Components)", "8080", false)
@@ -48,7 +52,7 @@ func GetVars(flagUtilFunc flagUtilGetter) Vars {
 		os.Exit(1)
 	}
 	log.Println("Google OAuth is set")
-	return Vars{
+	return CLVars{
 		addr: *addr,
 		domain: *domain,
 		port: *port,

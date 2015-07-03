@@ -5,6 +5,10 @@ import (
 	"github.com/stretchr/objx"
 	"github.com/stretchr/gomniauth/common"
 	"encoding/json"
+	"fmt"
+	"log"
+	phttp "github.com/pikanezi/http"
+	"github.com/stretchr/gomniauth"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
@@ -76,4 +80,35 @@ func removeCookie(w http.ResponseWriter, cookieName string) {
 		Path: "/",
 		MaxAge: -1,
 	})
+}
+
+func StartServer(providerNames []string, redirectUrl string, addr string) {
+	r := phttp.NewRouter()
+	r.SetCustomHeader(phttp.Header{
+		"Access-Control-Allow-Origin": "*",
+	})
+	for _, providerName := range providerNames {
+		provider, err := gomniauth.Provider(providerName)
+		if err != nil {
+			panic(err)
+		}
+		// TODO: Change URI to param
+		r.HandleFunc(fmt.Sprintf("/auth/%s/login", providerName), loginHandler(provider))
+		// TODO: Change URI to param
+		r.HandleFunc(
+			fmt.Sprintf("/auth/%s/callback", providerName),
+			callbackHandler(provider, redirectUrl, MongoDB{}))
+	}
+	r.HandleFunc("/auth/api/v1/user/{id}", userApiHandler(MongoDB{}))
+	r.HandleFunc("/auth/logout", logoutHandler(redirectUrl))
+	r.PathPrefix("/components/").Handler(
+		http.StripPrefix("/components/", http.FileServer(http.Dir("components"))))
+	r.PathPrefix("/bower_components/").Handler(
+		http.StripPrefix("/bower_components/", http.FileServer(http.Dir("bower_components"))))
+	r.PathPrefix("/component_tests/").Handler(
+		http.StripPrefix("/component_tests/", http.FileServer(http.Dir("component_tests"))))
+	log.Println("Starting the server on", addr)
+	if err := http.ListenAndServe(addr, r); err != nil {
+		log.Fatalln("Could not initiate the server", addr, " - ", err)
+	}
 }
