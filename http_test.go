@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/gomniauth/test"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/gomniauth/common"
-//	"encoding/json"
 	"errors"
 )
 
@@ -131,6 +130,17 @@ func getMockedCallbackProvider(completeAuthError error, getUserError error) comm
 	testProvider.On("GetUser", mock.Anything).Return(GetTestUser(), getUserError)
 	return testProvider
 }
+
+// TODO: Remove
+//func getMockedBowerComponents(completeAuthError error, getUserError error) common.Provider {
+//	creds := &common.Credentials{
+//		make(map[string]interface{}),
+//	}
+//	testProvider := new(test.TestProvider)
+//	testProvider.On("CompleteAuth", mock.Anything).Return(creds, completeAuthError)
+//	testProvider.On("GetUser", mock.Anything).Return(GetTestUser(), getUserError)
+//	return testProvider
+//}
 
 func doTestUserApiRequest() *httptest.ResponseRecorder {
 	testDB := new(TestDB)

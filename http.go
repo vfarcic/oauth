@@ -5,10 +5,10 @@ import (
 	"github.com/stretchr/objx"
 	"github.com/stretchr/gomniauth/common"
 	"encoding/json"
-	"fmt"
 	"log"
 	phttp "github.com/pikanezi/http"
 	"github.com/stretchr/gomniauth"
+	"fmt"
 )
 
 func loginHandler(provider common.Provider) http.HandlerFunc {
